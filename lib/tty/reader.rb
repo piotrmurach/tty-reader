@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require 'wisper'
-require 'rbconfig'
 
 require_relative 'reader/history'
 require_relative 'reader/line'
