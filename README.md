@@ -2,7 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/tty-reader.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/tty-reader.svg?branch=master)][travis]
-[![Build status](https://ci.appveyor.com/api/projects/status/4cguoiah5dprbq7n?svg=true)][appveyor]
+[![Build status](https://ci.appveyor.com/api/projects/status/cj4owy2vlty2q1ko?svg=true)][appveyor]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/tty-reader/badges/gpa.svg)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-reader/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/tty-reader.svg?branch=master)][inchpages]
@@ -15,13 +15,13 @@
 [coverage]: https://coveralls.io/github/piotrmurach/tty-reader
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-reader
 
-> A pure Ruby library that provides a set of methods for processing keyboard input in character, line and multiline modes. In addition it maintains history of entered input with an ability to recall and re-edit those inputs and register to listen for keystrokes.
+> A pure Ruby library that provides a set of methods for processing keyboard input in character, line and multiline modes. In addition it maintains history of entered input with an ability to recall and re-edit those inputs and register to listen for keystroke events.
 
 **TTY::Reader** provides independent reader component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
 ## Features
 
-* Reading keystroke
+* Reading single keypress
 * Line editing
 * Multiline input
 * History management
@@ -43,32 +43,51 @@ Or install it yourself as:
 
     $ gem install tty-reader
 
+* [1. Usage](#1-usage)
+* [2. API](#2-api)
+  * [2.1 read_keypress](#21-read_keypress)
+  * [2.2 read_line](#22-read_line)
+  * [2.3 read_multiline](#23-read_multiline)
+  * [2.4 events](#24-events)
+* [3. Configuration](#3-configuration)
+  * [3.1 :interrupt](#31-interrupt)
+  * [3.2 :track_history](#31-track_history)
+
 ## Usage
 
 ```ruby
 reader = TTY::Reader.new
 ```
 
-## keystroke
+## API
+
+### 2.1 read_keypress
+
+To read a single key stroke from the user use `read_char` or `read_keypress`:
 
 ```ruby
 reader.read_char
 reader.read_keypress
 ```
 
-## line
+## 2.2 read_line
+
+To read a single line terminated by new line character use `read_line` like so:
 
 ```ruby
 reader.read_line
 ```
 
-## multiline
+## 2.3 read_multiline
+
+To read more than one line terminated by `Ctrl+d` or `Ctrl+z` use `read_multiline`:
 
 ```ruby
 reader.read_multiline
+# => [ "line1", "line2", ... ]
 ```
 
-## events
+## 2.4 events
 
 You can register to listen on a key pressed events. This can be done by calling `on` with a event name:
 
@@ -119,6 +138,31 @@ The available events are:
 * `:keyescape`
 * `:keydelete`
 * `:keybackspace`
+
+## 3. Configuration
+
+### 3.1. :interrupt
+
+By default `InputInterrupt` error will be raised when the user hits the interrupt key(Control-C). However, you can customise this behaviour by passing the `:interrupt` option. The available options are:
+
+* `:signal` - sends interrupt signal
+* `:exit` - exists with status code
+* `:noop` - skips handler
+* custom proc
+
+For example, to send interrupt signal do:
+
+```ruby
+reader = TTY::Reader.new(interrupt: :signal)
+```
+
+### 3.2. :track_history
+
+The `read_line` and `read_multiline` provide history buffer that tracks all the lines entered during `TTY::Reader.new` interactions. The history buffer provides previoius or next lines when user presses up/down arrows respectively. However, if you wish to disable this behaviour use `:track_history` option like so:
+
+```ruby
+reader = TTY::Reader.new(track_history: false)
+```
 
 ## Development
 
