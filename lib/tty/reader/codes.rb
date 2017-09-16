@@ -44,10 +44,10 @@ module TTY
           escape:    "\e",
           space:     " ",
           backspace: ?\C-?,
-          home:      "\e[1~",
+          find:      "\e[1~",
           insert:    "\e[2~",
           delete:    "\e[3~",
-          end:       "\e[4~",
+          select:    "\e[4~",
           page_up:   "\e[5~",
           page_down: "\e[6~",
 
@@ -56,6 +56,8 @@ module TTY
           right:  "\e[C",
           left:   "\e[D",
           clear:  "\e[E",
+          home:   "\e[H",
+          end:    "\e[F",
 
           f1_xterm: "\eOP",
           f2_xterm: "\eOQ",
