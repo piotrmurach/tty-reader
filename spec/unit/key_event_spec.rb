@@ -66,10 +66,12 @@ RSpec.describe TTY::Reader::KeyEvent, '#from' do
     right:  ["\e[C"],
     left:   ["\e[D"],
     clear:  ["\e[E"],
-    home:   ["\e[1~"],
+    home:   ["\e[H"],
+    end:    ["\e[F"],
+    find:   ["\e[1~"],
     insert: ["\e[2~"],
     delete: ["\e[3~"],
-    end:    ["\e[4~"],
+    select: ["\e[4~"],
     page_up:   ["\e[5~"],
     page_down: ["\e[6~"]
   }.each do |name, codes|

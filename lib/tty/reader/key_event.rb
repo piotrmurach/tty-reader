@@ -50,10 +50,12 @@ module TTY
         when keys[:left]  then key.name = :left
         when keys[:right] then key.name = :right
         # editing
-        when keys[:clear] then key.name = :clear
-        when keys[:end]   then key.name = :end
-        when keys[:home]  then key.name = :home
-        when keys[:insert]    then key.name = :insert
+        when keys[:clear]  then key.name = :clear
+        when keys[:end]    then key.name = :end
+        when keys[:home]   then key.name = :home
+        when keys[:select] then key.name = :select
+        when keys[:find]   then key.name = :find
+        when keys[:insert] then key.name = :insert
         when keys[:page_up]   then key.name = :page_up
         when keys[:page_down] then key.name = :page_down
         when proc { |cs| ctrls.any? { |name| keys[name] == cs } }
