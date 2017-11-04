@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = TTY::Reader::VERSION
   spec.authors       = ["Piotr Murach"]
   spec.email         = [""]
-  spec.summary       = %q{Provides a set of methods for processing keyboard input in character, line and multiline modes.}
-  spec.description   = %q{Provides a set of methods for processing keyboard input in character, line and multiline modes. In addition it maintains history of entered input with an ability to recall and re-edit those inputs and register to listen for keystrokes.}
+  spec.summary       = %q{A set of methods for processing keyboard input in character, line and multiline modes.}
+  spec.description   = %q{A set of methods for processing keyboard input in character, line and multiline modes. In addition it maintains history of entered input with an ability to recall and re-edit those inputs and register to listen for keystrokes.}
   spec.homepage      = "https://piotrmurach.github.io/tty"
   spec.license       = "MIT"
 
