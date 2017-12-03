@@ -128,18 +128,14 @@ prompt.on(:keypress) { |key| ... }
 
 ### 2.5 subscribe
 
-You can subscribe any object to listen for the emitted [key events](#26-supported-events) using the `subscribe` message. The listener would need to implement a method for every event it wishes to receive.
+You can subscribe any object to listen for the emitted [key events](#27-supported-events) using the `subscribe` message. The listener would need to implement a method for every event it wishes to receive.
 
-For example, a `Context` wishes to only listen for `keypress` event:
+For example, if a `Context` class wishes to only listen for `keypress` event:
 
 ```ruby
 class Context
-  def initialize(events)
-    @events = events
-  end
-
-  def keypress(event) # => key event as method
-    @events << [:keypress, event.value]
+  def keypress(event)
+    ...
   end
 end
 ```
@@ -155,11 +151,13 @@ reader.subscribe(context)
 
 The signature for triggering key events is `trigger(event, args...)`. The first argument is a [key event name](#27-supported-events) followed by any number of actual values related to the event being triggered.
 
+For example, to trigger `:keydown` event do:
+
 ```ruby
 reader.trigger(:keydown)
 ```
 
-For example, to add vim bindings for line editing you could discern between alphanumeric inputs like so:
+To add vim bindings for line editing you could discern between alphanumeric inputs like so:
 
 ```ruby
 reader.on(:keypress) do |event|
@@ -201,14 +199,14 @@ The specific `ctrl` key events:
 
 * `:keyctrl_a`
 * `:keyctrl_b`
-...
+* ...
 * `:keyctrl_z`
 
 The key events for functional keys `f*` are:
 
 * `:keyf1`
 * `:keyf2`
-...
+* ...
 * `:keyf24`
 
 ## 3. Configuration
