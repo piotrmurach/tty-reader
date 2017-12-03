@@ -3,7 +3,7 @@
 [![Gem Version](https://badge.fury.io/rb/tty-reader.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/tty-reader.svg?branch=master)][travis]
 [![Build status](https://ci.appveyor.com/api/projects/status/cj4owy2vlty2q1ko?svg=true)][appveyor]
-[![Code Climate](https://codeclimate.com/github/piotrmurach/tty-reader/badges/gpa.svg)][codeclimate]
+[![Maintainability](https://api.codeclimate.com/v1/badges/2f68d5e8ecc271bda820/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-reader/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/tty-reader.svg?branch=master)][inchpages]
 
@@ -11,7 +11,7 @@
 [gem]: http://badge.fury.io/rb/tty-reader
 [travis]: http://travis-ci.org/piotrmurach/tty-reader
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-reader
-[codeclimate]: https://codeclimate.com/github/piotrmurach/tty-reader
+[codeclimate]: https://codeclimate.com/github/piotrmurach/tty-reader/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/tty-reader
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-reader
 
@@ -48,7 +48,10 @@ Or install it yourself as:
   * [2.1 read_keypress](#21-read_keypress)
   * [2.2 read_line](#22-read_line)
   * [2.3 read_multiline](#23-read_multiline)
-  * [2.4 events](#24-events)
+  * [2.4 on](#24-on)
+  * [2.5 subscribe](#25-subscribe)
+  * [2.6 trigger](#26-trigger)
+  * [2.7 supported events](#27-supported-events)
 * [3. Configuration](#3-configuration)
   * [3.1 :interrupt](#31-interrupt)
   * [3.2 :track_history](#31-track_history)
@@ -70,7 +73,7 @@ reader.read_char
 reader.read_keypress
 ```
 
-## 2.2 read_line
+### 2.2 read_line
 
 To read a single line terminated by new line character use `read_line` like so:
 
@@ -78,7 +81,7 @@ To read a single line terminated by new line character use `read_line` like so:
 reader.read_line
 ```
 
-## 2.3 read_multiline
+### 2.3 read_multiline
 
 To read more than one line terminated by `Ctrl+d` or `Ctrl+z` use `read_multiline`:
 
@@ -87,7 +90,7 @@ reader.read_multiline
 # => [ "line1", "line2", ... ]
 ```
 
-## 2.4 events
+### 2.4 on
 
 You can register to listen on a key pressed events. This can be done by calling `on` with a event name:
 
@@ -123,21 +126,90 @@ prompt.on(:keypress) { |key| ... }
       .on(:keydown)  { |key| ... }
 ```
 
-The available events are:
+### 2.5 subscribe
+
+You can subscribe any object to listen for the emitted [key events](#26-supported-events) using the `subscribe` message. The listener would need to implement a method for every event it wishes to receive.
+
+For example, a `Context` wishes to only listen for `keypress` event:
+
+```ruby
+class Context
+  def initialize(events)
+    @events = events
+  end
+
+  def keypress(event) # => key event as method
+    @events << [:keypress, event.value]
+  end
+end
+```
+
+Then subcribing is done:
+
+```ruby
+context = Context.new
+reader.subscribe(context)
+```
+
+### 2.6 trigger
+
+The signature for triggering key events is `trigger(event, args...)`. The first argument is a [key event name](#27-supported-events) followed by any number of actual values related to the event being triggered.
+
+```ruby
+reader.trigger(:keydown)
+```
+
+For example, to add vim bindings for line editing you could discern between alphanumeric inputs like so:
+
+```ruby
+reader.on(:keypress) do |event|
+  if event.value == 'j'
+    reader.trigger(:keydown)
+  end
+  if evevnt.value == 'k'
+    reader.trigger(:keup)
+  end
+end
+```
+
+### 2.7 supported events
+
+The available key events for character input are:
 
 * `:keypress`
+* `:keyenter`
+* `:keyreturn`
+* `:keytab`
+* `:keybackspace`
+* `:keyspace`
+* `:keyescape`
+* `:keydelete`
+* `:keyalpha`
+* `:keynum`
+
+The navigation relted key events are:
+
 * `:keydown`
 * `:keyup`
 * `:keyleft`
 * `:keyright`
-* `:keynum`
-* `:keytab`
-* `:keyenter`
-* `:keyreturn`
-* `:keyspace`
-* `:keyescape`
-* `:keydelete`
-* `:keybackspace`
+* `:keyhome`
+* `:keyend`
+* `:keyclear`
+
+The specific `ctrl` key events:
+
+* `:keyctrl_a`
+* `:keyctrl_b`
+...
+* `:keyctrl_z`
+
+The key events for functional keys `f*` are:
+
+* `:keyf1`
+* `:keyf2`
+...
+* `:keyf24`
 
 ## 3. Configuration
 
