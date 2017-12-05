@@ -1,6 +1,7 @@
 RSpec.describe TTY::Reader, '#subscribe' do
   let(:input)  { StringIO.new }
   let(:output) { StringIO.new }
+  let(:env)    { { "TTY_TEST" => true } }
 
   it "subscribes to receive events" do
     stub_const("Context", Class.new do
@@ -13,7 +14,7 @@ RSpec.describe TTY::Reader, '#subscribe' do
       end
     end)
 
-    reader = TTY::Reader.new(input, output)
+    reader = TTY::Reader.new(input, output, env: env)
     events = []
     context = Context.new(events)
     reader.subscribe(context)
