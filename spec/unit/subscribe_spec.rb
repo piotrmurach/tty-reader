@@ -20,7 +20,7 @@ RSpec.describe TTY::Reader, '#subscribe' do
 
     input << "aa\n"
     input.rewind
-    answer = reader.read_line(echo: false)
+    answer = reader.read_line
 
     expect(answer).to eq("aa\n")
     expect(events).to eq([
