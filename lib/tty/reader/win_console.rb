@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require_relative 'codes'
+require_relative 'keys'
 
 module TTY
   class Reader
@@ -27,7 +27,7 @@ module TTY
       def initialize(input)
         require_relative 'win_api'
         @input = input
-        @keys = Codes.ctrl_keys.merge(Codes.win_keys)
+        @keys = Keys.ctrl_keys.merge(Keys.win_keys)
         @escape_codes = [[NUL_HEX.ord], [ESC.ord], EXT_HEX.bytes.to_a]
       end
 

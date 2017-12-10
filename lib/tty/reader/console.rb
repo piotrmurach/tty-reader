@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require_relative 'codes'
+require_relative 'keys'
 require_relative 'mode'
 
 module TTY
@@ -27,7 +27,7 @@ module TTY
       def initialize(input)
         @input = input
         @mode  = Mode.new(input)
-        @keys  = Codes.ctrl_keys.merge(Codes.keys)
+        @keys  = Keys.ctrl_keys.merge(Keys.keys)
         @escape_codes = [[ESC.ord], CSI.bytes.to_a]
       end
 

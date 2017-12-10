@@ -1,10 +1,9 @@
 # encoding: utf-8
 
 require 'shellwords'
-require 'tty/reader/codes'
 
 RSpec.describe TTY::Reader::KeyEvent, '#from' do
-  let(:keys) { TTY::Reader::Codes.keys }
+  let(:keys) { TTY::Reader::Keys.keys }
 
   it "parses backspace" do
     event = described_class.from(keys, "\x7f")
@@ -32,7 +31,7 @@ RSpec.describe TTY::Reader::KeyEvent, '#from' do
 
   it "parses ctrl-a to ctrl-z inputs" do
     (1..26).zip('a'..'z').each do |code, char|
-      event = described_class.from(TTY::Reader::Codes.ctrl_keys, code.chr)
+      event = described_class.from(TTY::Reader::Keys.ctrl_keys, code.chr)
       expect(event.key.name).to eq(:"ctrl_#{char}")
       expect(event.value).to eq(code.chr)
     end

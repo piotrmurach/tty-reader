@@ -4,7 +4,7 @@
 module TTY
   class Reader
     # Mapping of escape codes to keys
-    module Codes
+    module Keys
       def ctrl_keys
         {
           ?\C-a => :ctrl_a,
@@ -159,6 +159,6 @@ module TTY
         }
       end
       module_function :win_keys
-    end # Codes
+    end # Keys
   end # Reader
 end # TTY

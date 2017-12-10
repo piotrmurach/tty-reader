@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-require_relative 'codes'
+require_relative 'keys'
 
 module TTY
   class Reader
@@ -39,7 +39,7 @@ module TTY
           key.shift = true
         when proc { |c| c =~ /^\d+$/ }
           key.name = :num
-        when proc { |cs| !TTY::Reader::Codes.ctrl_keys[cs].nil? }
+        when proc { |cs| !Keys.ctrl_keys[cs].nil? }
           key.ctrl = true
         end
 
