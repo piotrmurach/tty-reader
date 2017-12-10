@@ -20,6 +20,8 @@ Benchmark.ips do |x|
   x.compare!
 end
 
+# v0.1.0
+#
 # Calculating -------------------------------------
 #                 getc     52462 i/100ms
 #            read_char       751 i/100ms
