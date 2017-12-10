@@ -27,7 +27,7 @@ module TTY
       def initialize(input)
         require_relative 'win_api'
         @input = input
-        @keys = Codes.win_keys
+        @keys = Codes.ctrl_keys.merge(Codes.win_keys)
         @escape_codes = [[NUL_HEX.ord], [ESC.ord], EXT_HEX.bytes.to_a]
       end
 
