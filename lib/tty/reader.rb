@@ -133,7 +133,7 @@ module TTY
     def get_codes(options = {}, codes = [])
       opts = { echo: true, raw: false }.merge(options)
       char = console.get_char(opts)
-      handle_interrupt if char == console.keys[:ctrl_c]
+      handle_interrupt if console.keys[char] == :ctrl_c
       return if char.nil?
       codes << char.ord
 
@@ -167,32 +167,30 @@ module TTY
       prompt = args.empty? ? '' : args.pop
       opts = { echo: true, raw: true }.merge(options)
       line = Line.new('')
-      ctrls = console.keys.keys.grep(/ctrl/)
       clear_line = "\e[2K\e[1G"
 
       while (codes = unbufferred { get_codes(opts) }) && (code = codes[0])
         char = codes.pack('U*')
         trigger_key_event(char)
 
-        if console.keys[:backspace] == char || BACKSPACE == code
+        if console.keys[char] == :backspace || BACKSPACE == code
           next if line.start?
           line.left
           line.delete
-        elsif console.keys[:delete] == char || DELETE == code
+        elsif console.keys[char] == :delete || DELETE == code
           line.delete
-        elsif [console.keys[:ctrl_d],
-                console.keys[:ctrl_z]].include?(char)
+        elsif [:ctrl_d, :ctrl_z].include?(console.keys[char])
           break
-        elsif ctrls.include?(console.keys.key(char))
+        elsif console.keys[char].to_s =~ /ctrl_/
           # skip
-        elsif console.keys[:up] == char
+        elsif console.keys[char] == :up
           next unless history_previous?
           line.replace(history_previous)
-        elsif console.keys[:down] == char
+        elsif console.keys[char] == :down
           line.replace(history_next? ? history_next : '')
-        elsif console.keys[:left] == char
+        elsif console.keys[char] == :left
           line.left
-        elsif console.keys[:right] == char
+        elsif console.keys[char] == :right
           line.right
         else
           if opts[:raw] && code == CARRIAGE_RETURN
@@ -214,7 +212,7 @@ module TTY
 
         break if (code == CARRIAGE_RETURN || code == NEWLINE)
 
-        if (console.keys[:backspace] == char || BACKSPACE == code) && opts[:echo]
+        if (console.keys[char] == :backspace || BACKSPACE == code) && opts[:echo]
           if opts[:raw]
             output.print("\e[1X") unless line.start?
           else
