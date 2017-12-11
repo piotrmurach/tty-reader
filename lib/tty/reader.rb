@@ -192,6 +192,10 @@ module TTY
           line.left
         elsif console.keys[char] == :right
           line.right
+        elsif console.keys[char] == :home
+          line.move_to_start
+        elsif console.keys[char] == :end
+          line.move_to_end
         else
           if opts[:raw] && code == CARRIAGE_RETURN
             char = "\n"
