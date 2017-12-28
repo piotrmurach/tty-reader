@@ -215,9 +215,7 @@ module TTY
         end
 
         if opts[:raw] && opts[:echo]
-          extra_lines_by = (prompt.size + line.size - 2) / screen_width
-          output.print(cursor.clear_lines(1 + extra_lines_by))
-          output.print(prompt + line.to_s)
+          display_line(prompt, line, screen_width)
           if char == "\n"
             line.move_to_start
           elsif !line.end?
@@ -237,6 +235,18 @@ module TTY
       end
       add_to_history(line.to_s.rstrip) if track_history?
       line.to_s
+    end
+
+    # Display line for the current input
+    #
+    # @api private
+    def display_line(prompt, line, screen_width)
+      extra_lines  = [0, (prompt.size + line.size - 2) / screen_width].max
+      current_line = [0, (prompt.size + line.cursor - 2) / screen_width].max
+      lines_up = extra_lines - current_line
+      output.print(cursor.down(lines_up)) unless lines_up.zero?
+      output.print(cursor.clear_lines(1 + extra_lines))
+      output.print(prompt + line.to_s)
     end
 
     # Read multiple lines and return them in an array.

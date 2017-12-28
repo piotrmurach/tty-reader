@@ -20,7 +20,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     answer = reader.read_line
     expect(answer).to eq("password\n")
     expect(output.string).to eq([
-      "p",
+      "\e[2K\e[1Gp",
       "\e[2K\e[1Gpa",
       "\e[2K\e[1Gpas",
       "\e[2K\e[1Gpass",
