@@ -53,7 +53,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     ].join)
   end
 
-  xit 'deletes characters when backspace pressed' do
+  it 'deletes characters when backspace pressed' do
     input << "aa\ba\bcc\n"
     input.rewind
     answer = reader.read_line

@@ -42,8 +42,8 @@ module TTY
     # Key codes
     CARRIAGE_RETURN = 13
     NEWLINE         = 10
-    BACKSPACE       = 127
-    DELETE          = 8
+    BACKSPACE       = 8
+    DELETE          = 127
 
     # Initialize a Reader
     #
