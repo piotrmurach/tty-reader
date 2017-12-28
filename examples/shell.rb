@@ -1,4 +1,4 @@
-require 'tty-reader'
+require_relative '../lib/tty-reader'
 
 puts "*** TTY::Reader Shell ***"
 puts "Press Ctrl-X to exit"

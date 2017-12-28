@@ -1,4 +1,4 @@
-require 'tty-reader'
+require_relative '../lib/tty-reader'
 
 reader = TTY::Reader.new
 
