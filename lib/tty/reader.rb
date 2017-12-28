@@ -175,7 +175,6 @@ module TTY
       screen_width = TTY::Screen.width
 
       if opts[:echo] && !prompt.empty?
-        output.print(cursor.clear_line)
         output.print(prompt)
       end
 

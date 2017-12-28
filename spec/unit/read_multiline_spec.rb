@@ -63,13 +63,13 @@ RSpec.describe TTY::Reader, '#read_multiline' do
     input.rewind
     reader.read_multiline(">> ")
     expect(output.string).to eq([
-      "\e[2K\e[1G>> ",
+      ">> ",
       "\e[2K\e[1G>> 1",
       "\e[2K\e[1G>> 1\n",
-      "\e[2K\e[1G>> ",
+      ">> ",
       "\e[2K\e[1G>> 2",
       "\e[2K\e[1G>> 2\n",
-      "\e[2K\e[1G>> ",
+      ">> ",
       "\e[2K\e[1G>> 3",
     ].join)
   end
