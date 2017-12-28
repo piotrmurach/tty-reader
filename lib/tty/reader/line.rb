@@ -8,14 +8,20 @@ module TTY
     class Line
       extend Forwardable
 
-      def_delegators :@text, :size, :length, :to_s, :inspect,
-                      :slice!, :empty?
+      def_delegators :@text, :empty?
 
-      attr_accessor :text
+      # The editable text
+      # @api public
+      attr_reader :text
 
-      attr_accessor :cursor
+      # The current cursor position witin the text
+      # @api public
+      attr_reader :cursor
 
-      def initialize(text = "")
+      attr_reader :prompt
+
+      def initialize(prompt, text = "")
+        @prompt = prompt.dup
         @text   = text.dup
         @cursor = [0, @text.length].max
         yield self if block_given?
@@ -155,6 +161,44 @@ module TTY
       def remove
         left
         @text.slice!(@cursor, 1)
+      end
+
+      # Full line with prompt as string
+      #
+      # @api public
+      def to_s
+        "#{@prompt}#{@text}"
+      end
+      alias inspect to_s
+
+      # Prompt size
+      #
+      # @api public
+      def prompt_size
+        sanitize(@prompt).size
+      end
+
+      # Full line size with prompt
+      #
+      # @api public
+      def size
+        prompt_size + @text.size
+      end
+      alias length size
+
+      private
+
+      ANSI_MATCHER = /(\[)?\033(\[)?[;?\d]*[\dA-Za-z](\])?/
+
+      # Strip ANSI characters from the text
+      #
+      # @param [String] text
+      #
+      # @return [String]
+      #
+      # @api public
+      def sanitize(text)
+        text.dup.gsub(ANSI_MATCHER, '')
       end
     end # Line
   end # Reader
