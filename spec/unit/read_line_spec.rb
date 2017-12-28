@@ -37,7 +37,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     input.rewind
     answer = reader.read_line(echo: false)
     expect(answer).to eq("password\n")
-    expect(output.string).to eq('')
+    expect(output.string).to eq("\n")
   end
 
   it "displays a prompt before input" do

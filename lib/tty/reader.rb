@@ -174,9 +174,7 @@ module TTY
       line = Line.new('')
       screen_width = TTY::Screen.width
 
-      if opts[:echo] && !prompt.empty?
-        output.print(prompt)
-      end
+      output.print(prompt)
 
       while (codes = get_codes(opts)) && (code = codes[0])
         char = codes.pack('U*')
@@ -217,12 +215,15 @@ module TTY
           display_line(prompt, line, screen_width)
           if char == "\n"
             line.move_to_start
-          elsif !line.end?
-            output.print("\e[#{line.size - line.cursor}D")
+          elsif !line.end? # readjust cursor position
+            output.print(cursor.backward(line.size - line.cursor))
           end
         end
 
-        break if (code == CARRIAGE_RETURN || code == NEWLINE)
+        if (code == CARRIAGE_RETURN || code == NEWLINE)
+          output.puts unless opts[:echo]
+          break
+        end
 
         if (console.keys[char] == :backspace || BACKSPACE == code) && opts[:echo]
           if opts[:raw]
