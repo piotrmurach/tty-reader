@@ -19,13 +19,22 @@
 
 **TTY::Reader** provides independent reader component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
+## Compatibility
+
+The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. It originated from [tty-prompt](https://github.com/piotrmurach/tty-prompt) project to provide flexibility, independence from underlying operating system and Ruby like API interface for creating different prompts.
+
+`TTY::Reader` forges its own path to provide features necessary for building line editing in terminal applications!
+
 ## Features
 
 * Reading single keypress
 * Line editing
 * Multiline input
 * History management
-* Ability to register for key events
+* Ability to register for keystroke events
+* No global state
+* Works on Linux, OS X and Windows
+* Supports Ruby & JRuby
 
 ## Installation
 
@@ -75,19 +84,54 @@ reader.read_keypress
 
 ### 2.2 read_line
 
-To read a single line terminated by new line character use `read_line` like so:
+By default `read_line` works in `raw mode` which means it behaves like a line editor that allows you to edit each character, respond to `control characters` such as `Control-A` to `Control-B` or navigate through history.
+
+For example, to read a single line terminated by a new line character use `read_line` like so:
 
 ```ruby
 reader.read_line
 ```
 
+If you wish for the keystrokes to be interpreted by the terminal instead, use so called `cooked` mode by providing the `:raw` option set to `false`:
+
+```ruby
+reader.read_line(raw: false)
+```
+
+Any non-interpreted characters received are written back to terminal, however you can stop this by using `:echo` option set to `false`:
+
+```ruby
+reader.read_line(echo: false)
+```
+
+You can also provide a line prefix displayed before input by passing it as a first aargument:
+
+```ruby
+reader.read_line(">> ")
+# >> input goes here ...
+```
+
 ### 2.3 read_multiline
 
-To read more than one line terminated by `Ctrl+d` or `Ctrl+z` use `read_multiline`:
+By default `read_multiline` works in `raw mode` which means it behaves like a multiline editor that allows you to edit each character, respond to `control characters` such as `Control-A` to `Control-B` or navigate through history.
+
+For example, to read more than one line terminated by `Ctrl+d` or `Ctrl+z` use `read_multiline`:
 
 ```ruby
 reader.read_multiline
 # => [ "line1", "line2", ... ]
+```
+
+If you wish for the keystrokes to be interpreted by the terminal instead, use so called `cooked` mode by providing the `:raw` option set to `false`:
+
+```ruby
+reader.read_line(raw: false)
+```
+
+You can also provide a linke prefix displayed before input by passing a string as a first argument:
+
+```ruby
+reader.read_multiline(">> ")
 ```
 
 ### 2.4 on
