@@ -171,10 +171,10 @@ module TTY
       options = args.last.respond_to?(:to_hash) ? args.pop : {}
       prompt = args.empty? ? '' : args.pop
       opts = { echo: true, raw: true }.merge(options)
-      line = Line.new('')
+      line = Line.new(prompt, '')
       screen_width = TTY::Screen.width
 
-      output.print(prompt)
+      output.print(line.prompt)
 
       while (codes = get_codes(opts)) && (code = codes[0])
         char = codes.pack('U*')
@@ -212,7 +212,7 @@ module TTY
         end
 
         if opts[:raw] && opts[:echo]
-          display_line(prompt, line, screen_width)
+          display_line(line, screen_width)
           if char == "\n"
             line.move_to_start
           elsif !line.end? # readjust cursor position
@@ -233,20 +233,20 @@ module TTY
           end
         end
       end
-      add_to_history(line.to_s.rstrip) if track_history?
-      line.to_s
+      add_to_history(line.text.rstrip) if track_history?
+      line.text
     end
 
     # Display line for the current input
     #
     # @api private
-    def display_line(prompt, line, screen_width)
-      extra_lines  = [0, (prompt.size + line.size - 2) / screen_width].max
-      current_line = [0, (prompt.size + line.cursor - 2) / screen_width].max
+    def display_line(line, screen_width)
+      extra_lines  = [0, (line.size - 2) / screen_width].max
+      current_line = [0, (line.prompt_size + line.cursor - 2) / screen_width].max
       lines_up = extra_lines - current_line
       output.print(cursor.down(lines_up)) unless lines_up.zero?
       output.print(cursor.clear_lines(1 + extra_lines))
-      output.print(prompt + line.to_s)
+      output.print(line.to_s)
     end
 
     # Read multiple lines and return them in an array.
