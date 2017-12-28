@@ -21,8 +21,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "wisper", "~> 2.0.0"
-  spec.add_dependency "tty-screen"
-  spec.add_dependency "tty-cursor"
+  spec.add_dependency "tty-screen", "~> 0.6.4"
+  spec.add_dependency "tty-cursor", "~> 0.5.0"
 
   spec.add_development_dependency "bundler", ">= 1.5.0", "< 2.0"
   spec.add_development_dependency "rake",    "~> 10.0"
