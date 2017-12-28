@@ -16,7 +16,7 @@ module TTY
       attr_accessor :cursor
 
       def initialize(text = "")
-        @text = text
+        @text   = text.dup
         @cursor = [0, @text.length].max
         yield self if block_given?
       end
