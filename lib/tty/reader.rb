@@ -261,11 +261,11 @@ module TTY
     # @return [Array[String]]
     #
     # @api public
-    def read_multiline(prompt = '')
+    def read_multiline(*args)
       @stop = false
       lines = []
       loop do
-        line = read_line(prompt)
+        line = read_line(*args)
         break if !line || line == ''
         next  if line !~ /\S/ && !@stop
         if block_given?

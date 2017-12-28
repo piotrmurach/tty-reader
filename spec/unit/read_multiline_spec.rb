@@ -57,4 +57,20 @@ RSpec.describe TTY::Reader, '#read_multiline' do
     reader.read_multiline { |line| lines << line }
     expect(lines).to eq(["국경의 긴 터널을 빠져나오자\n", '설국이었다.'])
   end
+
+  it 'reads lines with a prompt' do
+    input << "1\n2\n3\C-d"
+    input.rewind
+    reader.read_multiline(">> ")
+    expect(output.string).to eq([
+      "\e[2K\e[1G>> ",
+      "\e[2K\e[1G>> 1",
+      "\e[2K\e[1G>> 1\n",
+      "\e[2K\e[1G>> ",
+      "\e[2K\e[1G>> 2",
+      "\e[2K\e[1G>> 2\n",
+      "\e[2K\e[1G>> ",
+      "\e[2K\e[1G>> 3",
+    ].join)
+  end
 end
