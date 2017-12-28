@@ -20,7 +20,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     answer = reader.read_line
     expect(answer).to eq("password\n")
     expect(output.string).to eq([
-      "\e[2K\e[1Gp",
+      "p",
       "\e[2K\e[1Gpa",
       "\e[2K\e[1Gpas",
       "\e[2K\e[1Gpass",
@@ -46,6 +46,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     answer = reader.read_line('>> ')
     expect(answer).to eq("aa\n")
     expect(output.string).to eq([
+      "\e[2K\e[1G>> ",
       "\e[2K\e[1G>> a",
       "\e[2K\e[1G>> aa",
       "\e[2K\e[1G>> aa\n"

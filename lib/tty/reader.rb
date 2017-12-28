@@ -1,6 +1,8 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+require 'tty-cursor'
+require 'tty-screen'
 require 'wisper'
 
 require_relative 'reader/history'
@@ -15,7 +17,7 @@ module TTY
   #
   # Used internally to provide key and line reading functionality
   #
-  # @api private
+  # @api public
   class Reader
     include Wisper::Publisher
 
@@ -34,6 +36,8 @@ module TTY
     alias track_history? track_history
 
     attr_reader :console
+
+    attr_reader :cursor
 
     # Key codes
     CARRIAGE_RETURN = 13
@@ -66,6 +70,7 @@ module TTY
         h.exclude = proc { |line| line.strip == '' }
       end
       @stop = false # gathering input
+      @cursor = TTY::Cursor
 
       subscribe(self)
     end
@@ -167,9 +172,14 @@ module TTY
       prompt = args.empty? ? '' : args.pop
       opts = { echo: true, raw: true }.merge(options)
       line = Line.new('')
-      clear_line = "\e[2K\e[1G"
+      screen_width = TTY::Screen.width
 
-      while (codes = unbufferred { get_codes(opts) }) && (code = codes[0])
+      if opts[:echo] && !prompt.empty?
+        output.print(cursor.clear_line)
+        output.print(prompt)
+      end
+
+      while (codes = get_codes(opts)) && (code = codes[0])
         char = codes.pack('U*')
         trigger_key_event(char)
 
@@ -205,7 +215,8 @@ module TTY
         end
 
         if opts[:raw] && opts[:echo]
-          output.print(clear_line)
+          extra_lines_by = (prompt.size + line.size - 2) / screen_width
+          output.print(cursor.clear_lines(1 + extra_lines_by))
           output.print(prompt + line.to_s)
           if char == "\n"
             line.move_to_start
