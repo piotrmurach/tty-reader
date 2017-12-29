@@ -167,9 +167,7 @@ module TTY
     # @return [String]
     #
     # @api public
-    def read_line(*args)
-      options = args.last.respond_to?(:to_hash) ? args.pop : {}
-      prompt = args.empty? ? '' : args.pop
+    def read_line(prompt = '', **options)
       opts = { echo: true, raw: true }.merge(options)
       line = Line.new(prompt, '')
       screen_width = TTY::Screen.width
