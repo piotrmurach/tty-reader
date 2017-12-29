@@ -227,7 +227,7 @@ module TTY
         end
 
         if (code == CARRIAGE_RETURN || code == NEWLINE)
-          #output.puts unless opts[:echo]
+          output.puts unless opts[:echo]
           break
         end
       end
