@@ -209,6 +209,14 @@ module TTY
           line.insert(char)
         end
 
+        if (console.keys[char] == :backspace || BACKSPACE == code) && opts[:echo]
+          if opts[:raw]
+            output.print("\e[1X") unless line.start?
+          else
+            output.print(?\s + (line.start? ? '' :  ?\b))
+          end
+        end
+
         if opts[:raw] && opts[:echo]
           display_line(line, screen_width)
           if char == "\n"
@@ -221,14 +229,6 @@ module TTY
         if (code == CARRIAGE_RETURN || code == NEWLINE)
           output.puts unless opts[:echo]
           break
-        end
-
-        if (console.keys[char] == :backspace || BACKSPACE == code) && opts[:echo]
-          if opts[:raw]
-            output.print("\e[1X") unless line.start?
-          else
-            output.print(?\s + (line.start? ? '' :  ?\b))
-          end
         end
       end
       add_to_history(line.text.rstrip) if track_history?
