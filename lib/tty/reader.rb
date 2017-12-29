@@ -58,9 +58,9 @@ module TTY
     #   disable line history tracking, true by default
     #
     # @api public
-    def initialize(input = $stdin, output = $stdout, options = {})
-      @input     = input
-      @output    = output
+    def initialize(**options)
+      @input     = options.fetch(:input) { $stdin }
+      @output    = options.fetch(:output) { $stdout }
       @interrupt = options.fetch(:interrupt) { :error }
       @env       = options.fetch(:env) { ENV }
       @track_history = options.fetch(:track_history) { true }

@@ -14,7 +14,7 @@ RSpec.describe TTY::Reader, '#subscribe' do
       end
     end)
 
-    reader = TTY::Reader.new(input, output, env: env)
+    reader = TTY::Reader.new(input: input, output: output, env: env)
     events = []
     context = Context.new(events)
     reader.subscribe(context)

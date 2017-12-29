@@ -6,7 +6,7 @@ RSpec.describe TTY::Reader, '#read_keypress' do
   let(:env)    { { "TTY_TEST" => true } }
 
   it "reads single key press" do
-    reader = described_class.new(input, out, env: env)
+    reader = described_class.new(input: input, output: out, env: env)
     input << "\e[Aaaaaaa\n"
     input.rewind
 
@@ -16,7 +16,7 @@ RSpec.describe TTY::Reader, '#read_keypress' do
   end
 
   it 'reads multibyte key press' do
-    reader = described_class.new(input, out, env: env)
+    reader = described_class.new(input: input, output: out, env: env)
     input << "ㄱ"
     input.rewind
 
@@ -27,7 +27,7 @@ RSpec.describe TTY::Reader, '#read_keypress' do
 
   context 'when Ctrl+C pressed' do
     it "defaults to raising InputInterrupt" do
-      reader = described_class.new(input, out, env: env)
+      reader = described_class.new(input: input, output: out, env: env)
       input << "\x03"
       input.rewind
 
@@ -37,7 +37,11 @@ RSpec.describe TTY::Reader, '#read_keypress' do
     end
 
     it "sends interrupt signal when :signal option is chosen" do
-      reader = described_class.new(input, out, interrupt: :signal, env: env)
+      reader = described_class.new(
+        input: input,
+        output: out,
+        interrupt: :signal,
+        env: env)
       input << "\x03"
       input.rewind
 
@@ -49,7 +53,11 @@ RSpec.describe TTY::Reader, '#read_keypress' do
     end
 
     it "exits with 130 code when :exit option is chosen" do
-      reader = described_class.new(input, out, interrupt: :exit, env: env)
+      reader = described_class.new(
+        input: input,
+        output: out,
+        interrupt: :exit,
+        env: env)
       input << "\x03"
       input.rewind
 
@@ -60,7 +68,11 @@ RSpec.describe TTY::Reader, '#read_keypress' do
 
     it "evaluates custom handler when proc object is provided" do
       handler = proc { raise ArgumentError }
-      reader = described_class.new(input, out, interrupt: handler, env: env)
+      reader = described_class.new(
+        input: input,
+        output: out,
+        interrupt: handler,
+        env: env)
       input << "\x03"
       input.rewind
 
@@ -70,7 +82,11 @@ RSpec.describe TTY::Reader, '#read_keypress' do
     end
 
     it "skips handler when handler is nil" do
-      reader = described_class.new(input, out, interrupt: :noop, env: env)
+      reader = described_class.new(
+        input: input,
+        output: out,
+        interrupt: :noop,
+        env: env)
       input << "\x03"
       input.rewind
 

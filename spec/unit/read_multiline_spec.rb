@@ -5,7 +5,7 @@ RSpec.describe TTY::Reader, '#read_multiline' do
   let(:output) { StringIO.new }
   let(:env)    { { "TTY_TEST" => true } }
 
-  subject(:reader) { described_class.new(input, output, env: env) }
+  subject(:reader) { described_class.new(input: input, output: output, env: env) }
 
   it 'reads no lines' do
     input << "\C-d"
