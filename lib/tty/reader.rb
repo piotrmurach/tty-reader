@@ -239,13 +239,23 @@ module TTY
 
     # Display line for the current input
     #
+    # Handles printing input that is longer than the current
+    # terminal width which allows copy & pasting long strings.
+    #
+    # @param [Line] line
+    #   the line to display
+    # @param [Number] screen_width
+    #   the terminal screen width
+    #
     # @api private
     def display_line(line, screen_width)
-      extra_lines  = [0, (line.size - 2) / screen_width].max
-      current_line = [0, (line.prompt_size + line.cursor - 2) / screen_width].max
-      lines_up = extra_lines - current_line
-      output.print(cursor.down(lines_up)) unless lines_up.zero?
-      output.print(cursor.clear_lines(1 + extra_lines))
+      new_chars = 2 # new character + we don't want to add new line on screen_width
+      total_lines  = 1 + [0, (line.size - new_chars) / screen_width].max
+      current_line = 1 + [0, (line.prompt_size + line.cursor - new_chars) / screen_width].max
+      lines_down = total_lines - current_line
+
+      output.print(cursor.down(lines_down)) unless lines_down.zero?
+      output.print(cursor.clear_lines(total_lines))
       output.print(line.to_s)
     end
 
