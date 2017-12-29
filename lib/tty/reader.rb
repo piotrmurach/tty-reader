@@ -227,11 +227,13 @@ module TTY
         end
 
         if (code == CARRIAGE_RETURN || code == NEWLINE)
-          output.puts unless opts[:echo]
+          #output.puts unless opts[:echo]
           break
         end
       end
-      add_to_history(line.text.rstrip) if track_history?
+      if track_history? && opts[:echo]
+        add_to_history(line.text.rstrip)
+      end
       line.text
     end
 
