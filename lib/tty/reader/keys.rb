@@ -127,7 +127,8 @@ module TTY
       def win_keys
         {
           "\t" => :tab,
-          "\r" => :enter,
+          "\n" => :enter,
+          "\r" => :return,
           "\e" => :escape,
           " "  => :space,
           "\b" => :backspace,
