@@ -11,6 +11,7 @@
 * Change Reader#initialize to only accept options and make input and output options as well.
 * Change #read_line to print newline character in noecho mode
 * Change Reader::Line to include prompt prefix
+* Change Reader#initialize to only accept options in place of positional arguments
 
 ### Fixed
 * Fix issues with recognising :home & :end keys on different terminals
