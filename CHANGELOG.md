@@ -10,6 +10,7 @@
 * Change Codes to Keys and inverse keys lookup to allow for different system keys matching same name.
 * Change Reader#initialize to only accept options and make input and output options as well.
 * Change #read_line to print newline character in noecho mode
+* Change Reader::Line to include prompt prefix
 
 ### Fixed
 * Fix issues with recognising :home & :end keys on different terminals
