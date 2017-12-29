@@ -16,6 +16,7 @@
 * Fix issues with recognising :home & :end keys on different terminals
 * Fix #read_line to work with strings spanning multiple screen widths and allow copy-pasting a long string without repeating prompt
 * Fix backspace keystroke in cooked mode
+* Fix history to only save lines in echo mode
 
 ## [v0.1.0] - 2017-08-30
 
