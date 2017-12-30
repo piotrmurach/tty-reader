@@ -249,7 +249,8 @@ module TTY
     #
     # @api private
     def display_line(line, screen_width)
-      new_chars = 2 # new character + we don't want to add new line on screen_width
+      # new character + we don't want to add new line on screen_width
+      new_chars = windows? ? 0 : 2
       total_lines  = 1 + [0, (line.size - new_chars) / screen_width].max
       current_line = 1 + [0, (line.prompt_size + line.cursor - new_chars) / screen_width].max
       lines_down = total_lines - current_line
