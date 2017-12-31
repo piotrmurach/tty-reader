@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 require 'forwardable'
@@ -24,12 +23,11 @@ module TTY
 
       attr_reader :prompt
 
-      def initialize(prompt, text = "")
+      def initialize(prompt, text = '')
         @prompt = prompt.dup
         @text   = text.dup
         @cursor = [0, @text.length].max
-        @insertion = false
-        @mode = :edit
+        @mode   = :edit
         yield self if block_given?
       end
 
@@ -75,7 +73,7 @@ module TTY
       #
       # @api public
       def start?
-        @cursor == 0
+        @cursor.zero?
       end
 
       # Check if cursor reached end of the line
