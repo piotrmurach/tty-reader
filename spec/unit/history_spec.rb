@@ -42,7 +42,7 @@ RSpec.describe TTY::Reader::History do
 
   it "excludes items" do
     exclude = proc { |line| /line #[23]/.match(line) }
-    history = described_class.new(3, exclude: exclude)
+    history = described_class.new(exclude: exclude)
     history << "line #1"
     history << "line #2"
     history << "line #3"
@@ -52,7 +52,7 @@ RSpec.describe TTY::Reader::History do
   end
 
   it "allows duplicates" do
-    history = described_class.new(3)
+    history = described_class.new
     history << "line #1"
     history << "line #1"
     history << "line #1"
@@ -61,7 +61,7 @@ RSpec.describe TTY::Reader::History do
   end
 
   it "prevents duplicates" do
-    history = described_class.new(3, duplicates: false)
+    history = described_class.new(duplicates: false)
     history << "line #1"
     history << "line #1"
     history << "line #1"

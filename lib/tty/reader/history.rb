@@ -35,11 +35,15 @@ module TTY
       #   the maximum size for history buffer
       #
       # param [Hash[Symbol]] options
+      # @option options [Boolean] :cycle
+      #   whether or not the history should cycle, false by default
       # @option options [Boolean] :duplicates
       #   whether or not to store duplicates, true by default
+      # @option options [Boolean] :exclude
+      #   a Proc to exclude items from storing in history
       #
       # @api public
-      def initialize(max_size = DEFAULT_SIZE, options = {})
+      def initialize(max_size = DEFAULT_SIZE, **options)
         @max_size   = max_size
         @index      = nil
         @history    = []
