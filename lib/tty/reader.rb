@@ -246,6 +246,22 @@ module TTY
       line.text
     end
 
+    # Count the number of screen lines given line takes up in terminal
+    #
+    # @param [Integer] line_size
+    #   the total line length
+    # @param [Integer] screen_width
+    #   the width of terminal screen
+    #
+    # @return [Integer]
+    #
+    # @api public
+    def count_screen_lines(line_size, screen_width = TTY::Screen.width)
+      # new character + we don't want to add new line on screen_width
+      new_chars = self.class.windows? ? 0 : 2
+      1 + [0, (line_size - new_chars) / screen_width].max
+    end
+
     # Display line for the current input
     #
     # Handles printing input that is longer than the current
@@ -258,10 +274,8 @@ module TTY
     #
     # @api private
     def display_line(line, screen_width)
-      # new character + we don't want to add new line on screen_width
-      new_chars = windows? ? 0 : 2
-      total_lines  = 1 + [0, (line.size - new_chars) / screen_width].max
-      current_line = 1 + [0, (line.prompt_size + line.cursor - new_chars) / screen_width].max
+      total_lines  = count_screen_lines(line.size, screen_width)
+      current_line = count_screen_lines(line.prompt_size + line.cursor, screen_width)
       lines_down = total_lines - current_line
 
       output.print(cursor.down(lines_down)) unless lines_down.zero?
