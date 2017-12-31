@@ -27,14 +27,15 @@ The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. 
 
 ## Features
 
-* Reading single keypress
+* Pure Ruby
 * Line editing
-* Multiline input
+* Reading single keypress
+* Reading multiline input
 * History management
 * Ability to register for keystroke events
 * No global state
-* Works on Linux, OS X and Windows
-* Supports Ruby & JRuby
+* Works on Linux, OS X, FreeBSD and Windows
+* Supports Ruby versions `>= 2.0.0` & JRuby
 
 ## Installation
 
