@@ -18,13 +18,55 @@ module TTY
       # @api public
       attr_reader :cursor
 
+      # The line mode
+      # @api public
+      attr_reader :mode
+
       attr_reader :prompt
 
       def initialize(prompt, text = "")
         @prompt = prompt.dup
         @text   = text.dup
         @cursor = [0, @text.length].max
+        @insertion = false
+        @mode = :edit
         yield self if block_given?
+      end
+
+      # Check if line is in edit mode
+      #
+      # @return [Boolean]
+      #
+      # @public
+      def editing?
+        @mode == :edit
+      end
+
+      # Enable edit mode
+      #
+      # @return [Boolean]
+      #
+      # @public
+      def edit_mode
+        @mode = :edit
+      end
+
+      # Check if line is in replace mode
+      #
+      # @return [Boolean]
+      #
+      # @public
+      def replacing?
+        @mode == :replace
+      end
+
+      # Enable replace mode
+      #
+      # @return [Boolean]
+      #
+      # @public
+      def replace_mode
+        @mode = :replace
       end
 
       # Check if cursor reached beginning of the line
@@ -86,6 +128,7 @@ module TTY
       #
       # @api public
       def []=(i, chars)
+        edit_mode
         if i.is_a?(Range)
           @text[i] = chars
           @cursor += chars.length
@@ -131,6 +174,7 @@ module TTY
       def replace(text)
         @text = text
         @cursor = @text.length # put cursor outside of text
+        replace_mode
       end
 
       # Insert char(s) at cursor position

@@ -114,4 +114,22 @@ RSpec.describe TTY::Reader::Line do
     line.delete
     expect(line.text).to eq('bce')
   end
+
+  it "replaces current line with new preserving cursor" do
+    line = described_class.new('', 'x' * 6)
+    expect(line.text).to eq('xxxxxx')
+    expect(line.cursor).to eq(6)
+    expect(line.mode).to eq(:edit)
+    expect(line.editing?).to eq(true)
+
+    line.replace('y' * 8)
+    expect(line.text).to eq('y' * 8)
+    expect(line.cursor).to eq(8)
+    expect(line.replacing?).to eq(true)
+
+    line.insert('z')
+    expect(line.text).to eq('y' * 8 + 'z')
+    expect(line.cursor).to eq(9)
+    expect(line.editing?).to eq(true)
+  end
 end
