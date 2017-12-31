@@ -111,19 +111,24 @@ RSpec.describe TTY::Reader::History do
 
   it "checks if navigation is possible" do
     history = described_class.new(3)
+
+    expect(history.index).to eq(nil)
     expect(history.previous?).to eq(false)
     expect(history.next?).to eq(false)
 
     history << "line #1"
     history << "line #2"
+    expect(history.index).to eq(1)
     expect(history.previous?).to eq(true)
     expect(history.next?).to eq(false)
 
     history.previous
+    expect(history.index).to eq(0)
     expect(history.previous?).to eq(true)
     expect(history.next?).to eq(true)
 
     history.previous
+    expect(history.index).to eq(0)
     expect(history.previous?).to eq(true)
     expect(history.next?).to eq(true)
   end

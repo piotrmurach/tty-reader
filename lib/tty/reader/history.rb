@@ -41,7 +41,7 @@ module TTY
       # @api public
       def initialize(max_size = DEFAULT_SIZE, options = {})
         @max_size   = max_size
-        @index      = 0
+        @index      = nil
         @history    = []
         @duplicates = options.fetch(:duplicates) { true }
         @exclude    = options.fetch(:exclude) { proc {} }
