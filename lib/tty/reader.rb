@@ -187,14 +187,18 @@ module TTY
         char = codes.pack('U*')
         trigger_key_event(char)
 
+        break if [:ctrl_d, :ctrl_z].include?(console.keys[char])
+
+        if opts[:raw] && opts[:echo]
+          clear_display(line, screen_width)
+        end
+
         if console.keys[char] == :backspace || BACKSPACE == code
           next if line.start?
           line.left
           line.delete
         elsif console.keys[char] == :delete || DELETE == code
           line.delete
-        elsif [:ctrl_d, :ctrl_z].include?(console.keys[char])
-          break
         elsif console.keys[char].to_s =~ /ctrl_/
           # skip
         elsif console.keys[char] == :up
@@ -227,7 +231,7 @@ module TTY
         end
 
         if opts[:raw] && opts[:echo]
-          display_line(line, screen_width)
+          output.print(line.to_s)
           if char == "\n"
             line.move_to_start
           elsif !line.end? # readjust cursor position
@@ -258,13 +262,13 @@ module TTY
     # @api public
     def count_screen_lines(line_size, screen_width = TTY::Screen.width)
       # new character + we don't want to add new line on screen_width
-      new_chars = self.class.windows? ? 0 : 2
+      new_chars = self.class.windows? ? 0 : 1
       1 + [0, (line_size - new_chars) / screen_width].max
     end
 
-    # Display line for the current input
+    # Clear display for the current line input
     #
-    # Handles printing input that is longer than the current
+    # Handles clearing input that is longer than the current
     # terminal width which allows copy & pasting long strings.
     #
     # @param [Line] line
@@ -273,14 +277,13 @@ module TTY
     #   the terminal screen width
     #
     # @api private
-    def display_line(line, screen_width)
+    def clear_display(line, screen_width)
       total_lines  = count_screen_lines(line.size, screen_width)
       current_line = count_screen_lines(line.prompt_size + line.cursor, screen_width)
       lines_down = total_lines - current_line
 
       output.print(cursor.down(lines_down)) unless lines_down.zero?
       output.print(cursor.clear_lines(total_lines))
-      output.print(line.to_s)
     end
 
     # Read multiple lines and return them in an array.
