@@ -26,6 +26,15 @@ module TTY
     # @api public
     InputInterrupt = Class.new(StandardError)
 
+    # Check if Windowz mode
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def self.windows?
+      ::File::ALT_SEPARATOR == '\\'
+    end
+
     attr_reader :input
 
     attr_reader :output
@@ -79,7 +88,7 @@ module TTY
     #
     # @api private
     def select_console(input)
-      if windows? && !env['TTY_TEST']
+      if self.class.windows? && !env['TTY_TEST']
         WinConsole.new(input)
       else
         Console.new(input)
@@ -368,15 +377,6 @@ module TTY
       else
         raise InputInterrupt
       end
-    end
-
-    # Check if Windowz mode
-    #
-    # @return [Boolean]
-    #
-    # @api public
-    def windows?
-      ::File::ALT_SEPARATOR == '\\'
     end
   end # Reader
 end # TTY
