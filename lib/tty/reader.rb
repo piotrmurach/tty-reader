@@ -282,7 +282,7 @@ module TTY
     # @api public
     def count_screen_lines(line_size, screen_width = TTY::Screen.width)
       # new character + we don't want to add new line on screen_width
-      new_chars = self.class.windows? ? 0 : 1
+      new_chars = self.class.windows? ? -1 : 1
       1 + [0, (line_size - new_chars) / screen_width].max
     end
 
