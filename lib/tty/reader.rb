@@ -194,16 +194,16 @@ module TTY
         end
 
         if console.keys[char] == :backspace || BACKSPACE == code
-          next if line.start?
-          line.left
-          line.delete
+          if !line.start?
+            line.left
+            line.delete
+          end
         elsif console.keys[char] == :delete || DELETE == code
           line.delete
         elsif console.keys[char].to_s =~ /ctrl_/
           # skip
         elsif console.keys[char] == :up
-          next unless history_previous?
-          line.replace(history_previous)
+          line.replace(history_previous) if history_previous?
         elsif console.keys[char] == :down
           line.replace(history_next? ? history_next : '')
         elsif console.keys[char] == :left
