@@ -242,7 +242,7 @@ module TTY
           if char == "\n"
             line.move_to_start
           elsif !line.end? # readjust cursor position
-            output.print(cursor.backward(line.text.size - line.cursor))
+            output.print(cursor.backward(line.text_size - line.cursor))
           end
         end
 
