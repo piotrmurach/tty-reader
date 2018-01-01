@@ -75,7 +75,7 @@ module TTY
 
       @track_history = options.fetch(:track_history) { true }
       @history_cycle = options.fetch(:history_cycle) { false }
-      exclude_proc   = -> (line) { line.strip == '' }
+      exclude_proc   = ->(line) { line.strip == '' }
       @history_exclude    = options.fetch(:history_exclude) { exclude_proc }
       @history_duplicates = options.fetch(:history_duplicates) { false }
 
@@ -161,7 +161,7 @@ module TTY
       condition = proc { |escape|
         (codes - escape).empty? ||
         (escape - codes).empty? &&
-        !(64..126).include?(codes.last)
+        !(64..126).cover?(codes.last)
       }
 
       while console.escape_codes.any?(&condition)
@@ -233,7 +233,7 @@ module TTY
           if opts[:raw]
             output.print("\e[1X") unless line.start?
           else
-            output.print(?\s + (line.start? ? '' :  ?\b))
+            output.print(?\s + (line.start? ? '' : ?\b))
           end
         end
 
@@ -246,7 +246,7 @@ module TTY
           end
         end
 
-        if (code == CARRIAGE_RETURN || code == NEWLINE)
+        if [CARRIAGE_RETURN, NEWLINE].include?(code)
           output.puts unless opts[:echo]
           break
         end
