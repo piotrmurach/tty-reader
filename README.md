@@ -64,7 +64,10 @@ Or install it yourself as:
   * [2.7 supported events](#27-supported-events)
 * [3. Configuration](#3-configuration)
   * [3.1 :interrupt](#31-interrupt)
-  * [3.2 :track_history](#31-track_history)
+  * [3.2 :track_history](#32-track_history)
+  * [3.3 :history_cycle](#33-history_cycle)
+  * [3.4 :history_duplicates](#34-history_duplicates)
+  * [3.5 :history_exclude](#35-history_exclude)
 
 ## Usage
 
@@ -256,7 +259,7 @@ The key events for functional keys `f*` are:
 
 ## 3. Configuration
 
-### 3.1. :interrupt
+### 3.1. `:interrupt`
 
 By default `InputInterrupt` error will be raised when the user hits the interrupt key(Control-C). However, you can customise this behaviour by passing the `:interrupt` option. The available options are:
 
@@ -271,12 +274,36 @@ For example, to send interrupt signal do:
 reader = TTY::Reader.new(interrupt: :signal)
 ```
 
-### 3.2. :track_history
+### 3.2. `:track_history`
 
 The `read_line` and `read_multiline` provide history buffer that tracks all the lines entered during `TTY::Reader.new` interactions. The history buffer provides previoius or next lines when user presses up/down arrows respectively. However, if you wish to disable this behaviour use `:track_history` option like so:
 
 ```ruby
 reader = TTY::Reader.new(track_history: false)
+```
+
+### 3.3. `:history_cycle`
+
+This option determines whether the history buffer allows for infinite navigation. By default it is set to `false`. You can change this:
+
+```ruby
+reader = TTY::Reader.new(history_cycle: true)
+```
+
+### 3.4. `:history_duplicates`
+
+This option controls whether duplicate lines are stored in history. By default set to `true`. You can change this:
+
+```ruby
+reader = TTY::Reader.new(history_duplicates: false)
+```
+
+### 3.5. `:history_exclude`
+
+This option allows you to exclude lines from being stored in history. It accepts a `Proc` with a line as a first argument. By default it is set to exlude empty lines. To change this:
+
+```ruby
+reader = TTY::Reader.new(history_exclude: ->(line) { ... })
 ```
 
 ## Development
@@ -306,4 +333,4 @@ Everyone interacting in the TTY::Reader project’s codebases, issue trackers, c
 
 ## Copyright
 
-Copyright (c) 2017 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2017-2018 Piotr Murach. See LICENSE for further details.
