@@ -5,9 +5,18 @@ require 'forwardable'
 module TTY
   class Reader
     class Line
-      extend Forwardable
+      ANSI_MATCHER = /(\[)?\033(\[)?[;?\d]*[\dA-Za-z](\])?/
 
-      def_delegators :@text, :empty?
+      # Strip ANSI characters from the text
+      #
+      # @param [String] text
+      #
+      # @return [String]
+      #
+      # @api public
+      def self.sanitize(text)
+        text.dup.gsub(ANSI_MATCHER, '')
+      end
 
       # The editable text
       # @api public
@@ -217,31 +226,23 @@ module TTY
       #
       # @api public
       def prompt_size
-        sanitize(@prompt).size
+        self.class.sanitize(@prompt).size
+      end
+
+      # Text size
+      #
+      # @api public
+      def text_size
+        self.class.sanitize(@text).size
       end
 
       # Full line size with prompt
       #
       # @api public
       def size
-        prompt_size + @text.size
+        prompt_size + text_size
       end
       alias length size
-
-      private
-
-      ANSI_MATCHER = /(\[)?\033(\[)?[;?\d]*[\dA-Za-z](\])?/
-
-      # Strip ANSI characters from the text
-      #
-      # @param [String] text
-      #
-      # @return [String]
-      #
-      # @api public
-      def sanitize(text)
-        text.dup.gsub(ANSI_MATCHER, '')
-      end
     end # Line
   end # Reader
 end # TTY
