@@ -72,11 +72,18 @@ module TTY
       @output    = options.fetch(:output) { $stdout }
       @interrupt = options.fetch(:interrupt) { :error }
       @env       = options.fetch(:env) { ENV }
+
       @track_history = options.fetch(:track_history) { true }
+      @history_cycle = options.fetch(:history_cycle) { false }
+      exclude_proc   = -> (line) { line.strip == '' }
+      @history_exclude    = options.fetch(:history_exclude) { exclude_proc }
+      @history_duplicates = options.fetch(:history_duplicates) { false }
+
       @console   = select_console(input)
       @history   = History.new do |h|
-        h.duplicates = false
-        h.exclude = proc { |line| line.strip == '' }
+        h.cycle = @history_cycle
+        h.duplicates = @history_duplicates
+        h.exclude = @history_exclude
       end
       @stop = false # gathering input
       @cursor = TTY::Cursor
