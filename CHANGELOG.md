@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.2.0] - 2017-xx-xx
+## [v0.2.0] - 2018-01-01
 
 ### Added
 * Add home & end keys support in #read_line
@@ -12,6 +12,7 @@
 * Change #read_line to print newline character in noecho mode
 * Change Reader::Line to include prompt prefix
 * Change Reader#initialize to only accept options in place of positional arguments
+* Change Reader to expose history options
 
 ### Fixed
 * Fix issues with recognising :home & :end keys on different terminals
