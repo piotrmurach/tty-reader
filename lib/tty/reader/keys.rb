@@ -69,15 +69,22 @@ module TTY
           "\e[D" => :left,
           "\e[E" => :clear,
           "\e[H" => :home,
-          "\eOH" => :home,
           "\e[F" => :end,
-          "\eOF" => :end,
           "\e[Z" => :back_tab, # shift + tab
 
-          "\eOP" => :f1,
-          "\eOQ" => :f2,
-          "\eOR" => :f3,
-          "\eOS" => :f4,
+          # xterm/gnome
+          "\eOA" => :up,
+          "\eOB" => :down,
+          "\eOC" => :right,
+          "\eOD" => :left,
+          "\eOE" => :clear,
+          "\eOF" => :end,
+          "\eOH" => :home,
+
+          "\eOP" => :f1, # xterm
+          "\eOQ" => :f2, # xterm
+          "\eOR" => :f3, # xterm
+          "\eOS" => :f4, # xterm
           "\e[[A" => :f1, # linux
           "\e[[B" => :f2, # linux
           "\e[[C" => :f3, # linux
@@ -115,11 +122,6 @@ module TTY
           "\e[21;2~" => :f22,
           "\e[23;2~" => :f23,
           "\e[24;2~" => :f24,
-
-          "\eOA" => :up,
-          "\eOB" => :down,
-          "\eOC" => :right,
-          "\eOD" => :left
         }
       end
       module_function :keys
