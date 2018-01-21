@@ -1,6 +1,8 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+require 'io/wait'
+
 require_relative 'keys'
 require_relative 'mode'
 
@@ -42,7 +44,13 @@ module TTY
       # @api private
       def get_char(options)
         mode.raw(options[:raw]) do
-          mode.echo(options[:echo]) { input.getc }
+          mode.echo(options[:echo]) do
+            if options[:nonblock]
+              input.ready? ? input.getc : nil
+            else
+              input.getc
+            end
+          end
         end
       end
 
