@@ -45,7 +45,17 @@ module TTY
       def get_char(options)
         mode.raw(options[:raw]) do
           mode.echo(options[:echo]) do
-            if options[:nonblock]
+            if options[:detect_esc]
+              begin
+                char = input.read_nonblock(16) # there is virtually no limit to escape sequences
+                char.force_encoding(STDIN.external_encoding)
+              rescue IO::WaitReadable, IO::EAGAINWaitReadable
+                IO.select([input])
+                retry
+              rescue EOFError
+                nil
+              end
+            elsif options[:nonblock]
               input.ready? ? input.getc : nil
             else
               input.getc

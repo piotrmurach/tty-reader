@@ -79,6 +79,8 @@ module TTY
       @history_exclude    = options.fetch(:history_exclude) { exclude_proc }
       @history_duplicates = options.fetch(:history_duplicates) { false }
 
+      @detect_esc = options.fetch(:detect_esc) { true }
+
       @console   = select_console(input)
       @history   = History.new do |h|
         h.cycle = @history_cycle
@@ -152,10 +154,16 @@ module TTY
     #
     # @api private
     def get_codes(options = {}, codes = [])
-      opts = { echo: true, raw: false }.merge(options)
+      opts = { echo: true, raw: false, detect_esc: @detect_esc }.merge(options)
       char = console.get_char(opts)
       handle_interrupt if console.keys[char] == :ctrl_c
-      return if char.nil?
+
+      if char.nil?
+        return
+      elsif @detect_esc
+        return codes.concat(char.codepoints)
+      end
+
       codes << char.ord
 
       condition = proc { |escape|
