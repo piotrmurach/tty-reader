@@ -213,7 +213,7 @@ reader.on(:keypress) do |event|
     reader.trigger(:keydown)
   end
   if evevnt.value == 'k'
-    reader.trigger(:keup)
+    reader.trigger(:keyup)
   end
 end
 ```
