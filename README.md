@@ -60,8 +60,9 @@ Or install it yourself as:
   * [2.3 read_multiline](#23-read_multiline)
   * [2.4 on](#24-on)
   * [2.5 subscribe](#25-subscribe)
-  * [2.6 trigger](#26-trigger)
-  * [2.7 supported events](#27-supported-events)
+  * [2.6 unsubscribe](#26-unsubscribe)
+  * [2.7 trigger](#27-trigger)
+  * [2.8 supported events](#28-supported-events)
 * [3. Configuration](#3-configuration)
   * [3.1 :interrupt](#31-interrupt)
   * [3.2 :track_history](#32-track_history)
@@ -178,10 +179,10 @@ prompt.on(:keypress) { |key| ... }
 
 You can subscribe any object to listen for the emitted [key events](#27-supported-events) using the `subscribe` message. The listener would need to implement a method for every event it wishes to receive.
 
-For example, if a `Context` class wishes to only listen for `keypress` event:
+For example, if a `MyListener` class wishes to only listen for `keypress` event:
 
 ```ruby
-class Context
+class MyListener
   def keypress(event)
     ...
   end
@@ -191,11 +192,26 @@ end
 Then subcribing is done:
 
 ```ruby
-context = Context.new
-reader.subscribe(context)
+reader.subscribe(MyListener.new)
 ```
 
-### 2.6 trigger
+Alternatively, `subscribe` allows you to listen to events only for the dueration of block execution like so:
+
+```ruby
+reader.subscribe(MyListener) do
+  ...
+end
+```
+
+### 2.6 unsubscribe
+
+You can unsubscribe any object from listening to the key events using the `unsubscribe` message:
+
+```ruby
+reader.unsubscribe(my_listener)
+```
+
+### 2.7 trigger
 
 The signature for triggering key events is `trigger(event, args...)`. The first argument is a [key event name](#27-supported-events) followed by any number of actual values related to the event being triggered.
 
@@ -218,7 +234,7 @@ reader.on(:keypress) do |event|
 end
 ```
 
-### 2.7 supported events
+### 2.8 supported events
 
 The available key events for character input are:
 
