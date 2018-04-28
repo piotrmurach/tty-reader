@@ -91,6 +91,43 @@ module TTY
       subscribe(self)
     end
 
+    alias old_subcribe subscribe
+
+    # Subscribe to receive key events
+    #
+    # @example
+    #   reader.subscribe(MyListener.new)
+    #
+    # @return [self|yield]
+    #
+    # @api public
+    def subscribe(listener, options = {})
+      old_subcribe(listener, options)
+      object = self
+      if block_given?
+        object = yield
+        unsubscribe(listener)
+      end
+      object
+    end
+
+    # Unsubscribe from receiving key events
+    #
+    # @example
+    #   reader.unsubscribe(my_listener)
+    #
+    # @return [void]
+    #
+    # @api public
+    def unsubscribe(listener)
+      registry = send(:local_registrations)
+      registry.each do |object|
+        if object.listener.equal?(listener)
+          registry.delete(object)
+        end
+      end
+    end
+
     # Select appropriate console
     #
     # @api private
