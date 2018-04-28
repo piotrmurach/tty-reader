@@ -1,5 +1,14 @@
 # Change log
 
+## [v0.3.0] - 2018-x-x
+
+### Added
+* Add Reader#unsubscribe to allow stop listening to local key events
+
+### Changed
+* Change Reader#subscribe to allow to listening for key events only inside a block
+* Change to group xterm keys for navigation
+
 ## [v0.2.0] - 2018-01-01
 
 ### Added
