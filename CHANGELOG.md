@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.4.0] - 2018-08-05
+
+### Changed
+* Change to update tty-screen & tty-cursor dependencies
+
 ## [v0.3.0] - 2018-04-29
 
 ### Added
@@ -33,6 +38,7 @@
 
 * Initial implementation and release
 
+[v0.4.0]: https://github.com/piotrmurach/tty-reader/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/piotrmurach/tty-reader/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/piotrmurach/tty-reader/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/piotrmurach/tty-reader/compare/v0.1.0
