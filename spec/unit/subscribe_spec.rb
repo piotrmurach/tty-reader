@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Reader, '#subscribe' do
   let(:input)  { StringIO.new }
   let(:output) { StringIO.new }

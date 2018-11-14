@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
 RSpec.describe TTY::Reader, '#publish_keypress_event' do
   let(:input)  { StringIO.new }

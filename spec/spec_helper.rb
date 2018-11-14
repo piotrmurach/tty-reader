@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 if ENV['COVERAGE'] || ENV['TRAVIS']
   require 'simplecov'
   require 'coveralls'
