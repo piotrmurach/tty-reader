@@ -1,4 +1,3 @@
-# encoding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "tty/reader/version"
@@ -13,7 +12,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://piotrmurach.github.io/tty"
   spec.license       = "MIT"
 
-  spec.files         = Dir["README.md", "LICENSE.txt", "Rakefile", "lib/**/*.rb", "bin/**", "examples/**/*.rb", "tasks/**", "tty-reader.gemspec"]
+  spec.files         = Dir['{lib,spec,examples,benchmarks}/**/*.rb']
+  spec.files        += Dir['{bin,tasks}/*', 'tty-reader.gemspec']
+  spec.files        += Dir['README.md', 'CHANGELOG.md', 'LICENSE.txt', 'Rakefile']
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
