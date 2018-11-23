@@ -49,7 +49,7 @@ module TTY
             end
           end
         end
-      rescue IO::EAGAINWaitReadable, EOFError
+      rescue IO::WaitReadable, EOFError
         # no more bytes to read
       end
 
