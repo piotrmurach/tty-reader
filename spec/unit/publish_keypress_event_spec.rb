@@ -11,10 +11,12 @@ RSpec.describe TTY::Reader, '#publish_keypress_event' do
     input << "abc\n"
     input.rewind
     chars = []
-    reader.on(:keypress) { |event| chars << event.value; }
+    lines = []
+    reader.on(:keypress) { |event| chars << event.value; lines << event.line }
     answer = reader.read_line
 
     expect(chars).to eq(%W(a b c \n))
+    expect(lines).to eq(%W(a ab abc abc\n))
     expect(answer).to eq("abc\n")
   end
 

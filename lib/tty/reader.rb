@@ -230,9 +230,11 @@ module TTY
 
       while (codes = get_codes(opts)) && (code = codes[0])
         char = codes.pack('U*')
-        trigger_key_event(char)
 
-        break if [:ctrl_d, :ctrl_z].include?(console.keys[char])
+        if [:ctrl_d, :ctrl_z].include?(console.keys[char])
+          trigger_key_event(char, line: line.to_s)
+          break
+        end
 
         if opts[:raw] && opts[:echo]
           clear_display(line, screen_width)
@@ -283,6 +285,8 @@ module TTY
             output.print(cursor.backward(line.text_size - line.cursor))
           end
         end
+
+        trigger_key_event(char, line: line.to_s)
 
         if [CARRIAGE_RETURN, NEWLINE].include?(code)
           output.puts unless opts[:echo]
@@ -422,8 +426,8 @@ module TTY
     # @return [nil]
     #
     # @api private
-    def trigger_key_event(char)
-      event = KeyEvent.from(console.keys, char)
+    def trigger_key_event(char, line: '')
+      event = KeyEvent.from(console.keys, char, line)
       trigger(:"key#{event.key.name}", event) if event.trigger?
       trigger(:keypress, event)
     end

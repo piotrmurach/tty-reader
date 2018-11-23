@@ -16,7 +16,7 @@ module TTY
     # Represents key event emitted during keyboard press
     #
     # @api public
-    class KeyEvent < Struct.new(:value, :key)
+    class KeyEvent < Struct.new(:key, :value, :line)
       # Create key event from read input codes
       #
       # @param [Hash[Symbol]] keys
@@ -26,7 +26,7 @@ module TTY
       # @return [KeyEvent]
       #
       # @api public
-      def self.from(keys, char)
+      def self.from(keys, char, line = '')
         key = Key.new
         key.name = (name = keys[char]) ? name : :ignore
 
@@ -42,7 +42,7 @@ module TTY
           key.ctrl = true
         end
 
-        new(char, key)
+        new(key, char, line)
       end
 
       # Check if key event can be triggered

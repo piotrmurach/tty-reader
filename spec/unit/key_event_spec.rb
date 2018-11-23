@@ -44,6 +44,11 @@ RSpec.describe TTY::Reader::KeyEvent, '#from' do
     expect(event.value).to eq('*')
   end
 
+  it "exposes line value" do
+    event = described_class.from(keys, 'c', 'ab')
+    expect(event.line).to eq('ab')
+  end
+
   # F1-F12 keys
   {
     f1:  ["\eOP","\e[[A","\e[11~"],
