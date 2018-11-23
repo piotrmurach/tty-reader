@@ -41,8 +41,16 @@ module TTY
       # @api private
       def get_char(options)
         mode.raw(options[:raw]) do
-          mode.echo(options[:echo]) { input.getc }
+          mode.echo(options[:echo]) do
+            if options[:nonblock]
+              input.read_nonblock(1)
+            else
+              input.getc
+            end
+          end
         end
+      rescue IO::EAGAINWaitReadable, EOFError
+        # no more bytes to read
       end
 
       protected

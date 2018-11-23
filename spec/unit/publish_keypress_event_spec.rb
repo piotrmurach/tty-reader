@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Reader, '#publish_keypress_event' do
-  let(:input)  { StringIO.new }
-  let(:out) { StringIO.new }
-  let(:env)    { { "TTY_TEST" => true } }
+  let(:input) { StringIO.new }
+  let(:out)   { StringIO.new }
+  let(:env)   { { "TTY_TEST" => true } }
 
   let(:reader) { described_class.new(input: input, output: out, env: env) }
 
@@ -11,10 +11,25 @@ RSpec.describe TTY::Reader, '#publish_keypress_event' do
     input << "abc\n"
     input.rewind
     chars = []
-    reader.on(:keypress) { |event| chars << event.value }
+    lines = []
+    reader.on(:keypress) { |event| chars << event.value; lines << event.line }
     answer = reader.read_line
+
     expect(chars).to eq(%W(a b c \n))
+    expect(lines).to eq(%W(a ab abc abc\n))
     expect(answer).to eq("abc\n")
+  end
+
+  it "publishes :keyescape events" do
+    input << "a\e"
+    input.rewind
+    keys = []
+    reader.on(:keypress)  { |event| keys << "keypress_#{event.value}"}
+    reader.on(:keyescape) { |event| keys << "keyescape_#{event.value}" }
+
+    answer = reader.read_line
+    expect(keys).to eq(["keypress_a", "keyescape_\e", "keypress_\e"])
+    expect(answer).to eq("a\e")
   end
 
   it "publishes :keyup for read_keypress" do

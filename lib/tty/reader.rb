@@ -201,8 +201,10 @@ module TTY
       }
 
       while console.escape_codes.any?(&condition)
-        get_codes(options, codes)
+        char_codes = get_codes(options.merge(nonblock: true), codes)
+        break if char_codes.nil?
       end
+
       codes
     end
 
