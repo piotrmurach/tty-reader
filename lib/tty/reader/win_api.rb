@@ -7,9 +7,7 @@ module TTY
     module WinAPI
       include Fiddle
 
-      Handle = RUBY_VERSION >= "2.0.0" ? Fiddle::Handle : DL::Handle
-
-      CRT_HANDLE = Handle.new("msvcrt") rescue Handle.new("crtdll")
+      CRT_HANDLE = Fiddle::Handle.new("msvcrt") rescue Fiddle::Handle.new("crtdll")
 
       # Get a character from the console without echo.
       #
