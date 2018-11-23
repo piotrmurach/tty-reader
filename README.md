@@ -113,7 +113,7 @@ Any non-interpreted characters received are written back to terminal, however yo
 reader.read_line(echo: false)
 ```
 
-You can also provide a line prefix displayed before input by passing it as a first aargument:
+You can also provide a line prefix displayed before input by passing it as a first argument:
 
 ```ruby
 reader.read_line(">> ")
@@ -137,7 +137,7 @@ If you wish for the keystrokes to be interpreted by the terminal instead, use so
 reader.read_line(raw: false)
 ```
 
-You can also provide a linke prefix displayed before input by passing a string as a first argument:
+You can also provide a line prefix displayed before input by passing a string as a first argument:
 
 ```ruby
 reader.read_multiline(">> ")
@@ -145,13 +145,26 @@ reader.read_multiline(">> ")
 
 ### 2.4 on
 
-You can register to listen on a key pressed events. This can be done by calling `on` with a event name:
+You can register to listen on a key pressed events. This can be done by calling `on` with a event name(s):
 
 ```ruby
 reader.on(:keypress) { |event| .... }
 ```
 
-The event object is yielded to a block whenever particular key event fires. The event has `key` and `value` methods. Further, the `key` responds to following messages:
+or listen for multiple events:
+
+``ruby
+reader.on(:keyctrl_x, :keyescape) { |event| ... }
+````
+
+The `KeyEvent` object is yielded to a block whenever a particular key event fires. The event responds to:
+* `key`   - key pressed
+* `value` - value of the key pressed
+* `line`  - the content of the currently edited line, empty otherwise
+
+The `value` returns the actual key pressed and the `line` the content for the currently edited line or is empty.
+
+The `key` is an object that responds to following messages:
 
 * `name`  - the name of the event such as :up, :down, letter or digit
 * `meta`  - true if event is non-standard key associated
