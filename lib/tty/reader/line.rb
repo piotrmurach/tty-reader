@@ -30,13 +30,19 @@ module TTY
       # @api public
       attr_reader :mode
 
+      # The prompt displayed before input
+      # @api public
       attr_reader :prompt
 
+      # Create a Line instance
+      #
+      # @api private
       def initialize(prompt, text = '')
         @prompt = prompt.dup
         @text   = text.dup
         @cursor = [0, @text.length].max
         @mode   = :edit
+
         yield self if block_given?
       end
 
@@ -128,6 +134,9 @@ module TTY
       # @param [Integer] i
       #   the index to insert at
       #
+      # @param [String] chars
+      #   the characters to insert
+      #
       # @example
       #   text = 'aaa'
       #   line[5]= 'b'
@@ -136,6 +145,7 @@ module TTY
       # @api public
       def []=(i, chars)
         edit_mode
+
         if i.is_a?(Range)
           @text[i] = chars
           @cursor += chars.length
@@ -145,10 +155,7 @@ module TTY
         if i <= 0
           before_text = ''
           after_text = @text.dup
-        elsif i == @text.length - 1
-          before_text = @text.dup
-          after_text = ''
-        elsif i > @text.length - 1
+        elsif i > @text.length - 1 # insert outside of line input
           before_text = @text.dup
           after_text = ?\s * (i - @text.length)
           @cursor += after_text.length
