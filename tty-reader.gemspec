@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Piotr Murach"]
   spec.email         = [""]
   spec.summary       = %q{A set of methods for processing keyboard input in character, line and multiline modes.}
-  spec.description   = %q{A set of methods for processing keyboard input in character, line and multiline modes. In addition it maintains history of entered input with an ability to recall and re-edit those inputs and register to listen for keystrokes.}
+  spec.description   = %q{A set of methods for processing keyboard input in character, line and multiline modes. It maintains history of entered input with an ability to recall and re-edit those inputs. It lets you register to listen for keystroke events and trigger custom key events yourself.}
   spec.homepage      = "https://piotrmurach.github.io/tty"
   spec.license       = "MIT"
 
