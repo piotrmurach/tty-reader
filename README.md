@@ -23,13 +23,13 @@
 
 **TTY::Reader** provides independent reader component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
+![](assets/shell.gif)
+
 ## Compatibility
 
 The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. It originated from [tty-prompt](https://github.com/piotrmurach/tty-prompt) project to provide flexibility, independence from underlying operating system and Ruby like API interface for creating different prompts.
 
 `TTY::Reader` forges its own path to provide features necessary for building line editing in terminal applications!
-
-![](assets/shell.gif)
 
 ## Features
 
