@@ -76,8 +76,29 @@ Or install it yourself as:
 
 ## Usage
 
+In just a few lines you can recreate IRB prompt.
+
+Initialize the reader:
+
 ```ruby
 reader = TTY::Reader.new
+```
+
+Then register to listen for key events, in this case listen for `Ctrl-X` or `Esc` keys to exit:
+
+```ruby
+reader.on(:keyctrl_x, :keyescape) do
+  puts "Exiting..."
+  exit
+end
+```
+
+Finally, keep asking user for line input with a `=>` as a prompt:
+
+```ruby
+loop do
+  reader.read_line('=> ')
+end
 ```
 
 ## API
