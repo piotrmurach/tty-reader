@@ -29,6 +29,8 @@ The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. 
 
 `TTY::Reader` forges its own path to provide features necessary for building line editing in terminal applications!
 
+![](assets/shell.gif)
+
 ## Features
 
 * Pure Ruby
