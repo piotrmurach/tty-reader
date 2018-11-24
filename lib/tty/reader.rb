@@ -223,7 +223,7 @@ module TTY
     # @api public
     def read_line(prompt = '', **options)
       opts = { echo: true, raw: true }.merge(options)
-      line = Line.new(prompt, '')
+      line = Line.new(prompt: prompt)
       screen_width = TTY::Screen.width
 
       output.print(line.prompt)

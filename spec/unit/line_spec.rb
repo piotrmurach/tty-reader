@@ -2,7 +2,7 @@
 
 RSpec.describe TTY::Reader::Line do
   it "provides access to the prompt" do
-    line = described_class.new('>> ', 'aaa')
+    line = described_class.new('aaa', prompt: '>> ')
     expect(line.prompt).to eq('>> ')
     expect(line.text).to eq('aaa')
     expect(line.size).to eq(6)
@@ -10,7 +10,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts characters inside a line" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
 
     line[0] = 'test'
     expect(line.text).to eq('testaaaaa')
@@ -20,7 +20,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "moves cursor left and right" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
 
     5.times { line.left }
     expect(line.cursor).to eq(0)
@@ -35,7 +35,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts char at start of the line" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
     expect(line.cursor).to eq(5)
 
     line[0] = 'b'
@@ -47,7 +47,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts char at end of the line" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
     expect(line.cursor).to eq(5)
 
     line[4] = 'b'
@@ -56,7 +56,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts char inside the line" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
     expect(line.cursor).to eq(5)
 
     line[2] = 'b'
@@ -65,7 +65,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts char outside of the line size" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
     expect(line.cursor).to eq(5)
 
     line[10] = 'b'
@@ -74,7 +74,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts chars in empty string" do
-    line = described_class.new('', '')
+    line = described_class.new('')
     expect(line.cursor).to eq(0)
 
     line.insert('a')
@@ -90,7 +90,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "inserts characters with #insert call" do
-    line = described_class.new('', 'aaaaa')
+    line = described_class.new('aaaaa')
     expect(line.cursor).to eq(5)
 
     line.left(2)
@@ -105,7 +105,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "removes char before current cursor position" do
-    line = described_class.new('', 'abcdef')
+    line = described_class.new('abcdef')
     expect(line.cursor).to eq(6)
 
     line.remove
@@ -124,7 +124,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "deletes char under current cursor position" do
-    line = described_class.new('', 'abcdef')
+    line = described_class.new('abcdef')
 
     line.left(3)
     line.delete
@@ -140,7 +140,7 @@ RSpec.describe TTY::Reader::Line do
   end
 
   it "replaces current line with new preserving cursor" do
-    line = described_class.new('', 'x' * 6)
+    line = described_class.new('x' * 6)
     expect(line.text).to eq('xxxxxx')
     expect(line.cursor).to eq(6)
     expect(line.mode).to eq(:edit)

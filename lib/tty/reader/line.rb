@@ -37,7 +37,7 @@ module TTY
       # Create a Line instance
       #
       # @api private
-      def initialize(prompt, text = '')
+      def initialize(text = '', prompt: '')
         @prompt = prompt.dup
         @text   = text.dup
         @cursor = [0, @text.length].max
