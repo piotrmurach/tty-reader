@@ -19,7 +19,7 @@
 [coverage]: https://coveralls.io/github/piotrmurach/tty-reader
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-reader
 
-> A pure Ruby library that provides a set of methods for processing keyboard input in character, line and multiline modes. In addition it maintains history of entered input with an ability to recall and re-edit those inputs and register to listen for keystroke events.
+> A pure Ruby library that provides a set of methods for processing keyboard input in character, line and multiline modes. It maintains history of entered input with an ability to recall and re-edit those inputs. It lets you register to listen for keystroke events and trigger custom key events yourself.
 
 **TTY::Reader** provides independent reader component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
@@ -32,11 +32,11 @@ The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. 
 ## Features
 
 * Pure Ruby
-* Line editing
-* Reading single keypress
-* Reading multiline input
-* History management
-* Ability to register for keystroke events
+* Reading [single keypress](#21-read_keypress)
+* [Line editing](#22-read_line)
+* Reading [multiline input](#23-read_multiline)
+* Ability to [register](#24-on) for keystroke events
+* Track input [history](#32-track_history)
 * No global state
 * Works on Linux, OS X, FreeBSD and Windows
 * Supports Ruby versions `>= 2.0.0` & JRuby
@@ -174,11 +174,12 @@ reader.on(:keypress) { |event| .... }
 
 or listen for multiple events:
 
-``ruby
+```ruby
 reader.on(:keyctrl_x, :keyescape) { |event| ... }
-````
+```
 
 The `KeyEvent` object is yielded to a block whenever a particular key event fires. The event responds to:
+
 * `key`   - key pressed
 * `value` - value of the key pressed
 * `line`  - the content of the currently edited line, empty otherwise
