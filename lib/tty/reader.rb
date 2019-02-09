@@ -23,7 +23,7 @@ module TTY
     # Raised when the user hits the interrupt key(Control-C)
     #
     # @api public
-    InputInterrupt = Class.new(StandardError)
+    InputInterrupt = Class.new(Interrupt)
 
     # Check if Windowz mode
     #
