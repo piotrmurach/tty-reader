@@ -10,14 +10,18 @@ RSpec.describe TTY::Reader, '#read_line' do
   it 'masks characters' do
     input << "password\n"
     input.rewind
+
     answer = reader.read_line(echo: false)
+
     expect(answer).to eq("password\n")
   end
 
   it "echoes characters back" do
     input << "password\n"
     input.rewind
+
     answer = reader.read_line
+
     expect(answer).to eq("password\n")
     expect(output.string).to eq([
       "\e[2K\e[1Gp",
@@ -35,7 +39,9 @@ RSpec.describe TTY::Reader, '#read_line' do
   it "doesn't echo characters back" do
     input << "password\n"
     input.rewind
+
     answer = reader.read_line(echo: false)
+
     expect(answer).to eq("password\n")
     expect(output.string).to eq("\n")
   end
@@ -43,7 +49,9 @@ RSpec.describe TTY::Reader, '#read_line' do
   it "displays a prompt before input" do
     input << "aa\n"
     input.rewind
+
     answer = reader.read_line('>> ')
+
     expect(answer).to eq("aa\n")
     expect(output.string).to eq([
       ">> ",
@@ -53,17 +61,36 @@ RSpec.describe TTY::Reader, '#read_line' do
     ].join)
   end
 
+  it "displays custom input with a prompt" do
+    input << "aa\n"
+    input.rewind
+
+    answer = reader.read_line("> ", value: "xx")
+
+    expect(answer).to eq("xxaa\n")
+    expect(output.string).to eq([
+      "> xx",
+      "\e[2K\e[1G> xxa",
+      "\e[2K\e[1G> xxaa",
+      "\e[2K\e[1G> xxaa\n"
+    ].join)
+  end
+
   it 'deletes characters when backspace pressed' do
     input << "aa\ba\bcc\n"
     input.rewind
+
     answer = reader.read_line
+
     expect(answer).to eq("acc\n")
   end
 
   it 'reads multibyte line' do
     input << "한글"
     input.rewind
+
     answer = reader.read_line
+
     expect(answer).to eq("한글")
   end
 end

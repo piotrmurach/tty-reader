@@ -223,10 +223,11 @@ module TTY
     # @api public
     def read_line(prompt = '', **options)
       opts = { echo: true, raw: true }.merge(options)
-      line = Line.new(prompt: prompt)
+      value = options.fetch(:value, '')
+      line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
 
-      output.print(line.prompt)
+      output.print(line)
 
       while (codes = get_codes(opts)) && (code = codes[0])
         char = codes.pack('U*')
