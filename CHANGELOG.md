@@ -1,5 +1,14 @@
 # Change log
 
+## [v0.6.0] - 2019-05-xx
+
+### Added
+* Add :value option to #read_line to allow pre populate line content
+
+### Changed
+* Change to make InputInterrupt to derive from Interrupt by Samuel Williams(@ioquatix)
+* Change to remove bundler version constraints
+
 ## [v0.5.0] - 2018-11-24
 
 ### Added
