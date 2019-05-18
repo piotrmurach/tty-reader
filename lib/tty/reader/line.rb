@@ -209,16 +209,19 @@ module TTY
       # Remove char from the line at current position
       #
       # @api public
-      def delete
-        @text.slice!(@cursor, 1)
+      def delete(n = 1)
+        @text.slice!(@cursor, n)
       end
 
       # Remove char from the line in front of the cursor
       #
+      # @param [Integer] n
+      #   the number of chars to remove
+      #
       # @api public
-      def remove
-        left
-        @text.slice!(@cursor, 1)
+      def remove(n = 1)
+        left(n)
+        @text.slice!(@cursor, n)
       end
 
       # Full line with prompt as string

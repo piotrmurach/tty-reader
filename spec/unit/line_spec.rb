@@ -108,8 +108,7 @@ RSpec.describe TTY::Reader::Line do
     line = described_class.new('abcdef')
     expect(line.cursor).to eq(6)
 
-    line.remove
-    line.remove
+    line.remove(2)
     expect(line.text).to eq('abcd')
     expect(line.cursor).to eq(4)
 
