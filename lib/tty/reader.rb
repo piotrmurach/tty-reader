@@ -278,6 +278,9 @@ module TTY
           end
         end
 
+        # trigger before line is printed to allow for line changes
+        trigger_key_event(char, line: line.to_s)
+
         if opts[:raw] && opts[:echo]
           output.print(line.to_s)
           if char == "\n"
@@ -286,8 +289,6 @@ module TTY
             output.print(cursor.backward(line.text_size - line.cursor))
           end
         end
-
-        trigger_key_event(char, line: line.to_s)
 
         if [CARRIAGE_RETURN, NEWLINE].include?(code)
           output.puts unless opts[:echo]
