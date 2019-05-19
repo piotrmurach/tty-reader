@@ -1,13 +1,15 @@
 # Change log
 
-## [v0.6.0] - 2019-05-xx
+## [v0.6.0] - 2019-05-19
 
 ### Added
-* Add :value option to #read_line to allow pre populate line content
+* Add :value option to #read_line to allow pre-populating of line content
 
 ### Changed
 * Change to make InputInterrupt to derive from Interrupt by Samuel Williams(@ioquatix)
+* Change #read_line to trigger before line is printed to allow for line changes in key callbacks
 * Change to remove bundler version constraints
+* Change to update tty-screen dependency
 
 ## [v0.5.0] - 2018-11-24
 
@@ -56,6 +58,7 @@
 
 * Initial implementation and release
 
+[v0.6.0]: https://github.com/piotrmurach/tty-reader/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/piotrmurach/tty-reader/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-reader/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/piotrmurach/tty-reader/compare/v0.2.0...v0.3.0
