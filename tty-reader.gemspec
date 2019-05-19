@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "tty-reader"
   spec.version       = TTY::Reader::VERSION
   spec.authors       = ["Piotr Murach"]
-  spec.email         = [""]
+  spec.email         = ["me@piotrmurach.com"]
   spec.summary       = %q{A set of methods for processing keyboard input in character, line and multiline modes.}
   spec.description   = %q{A set of methods for processing keyboard input in character, line and multiline modes. It maintains history of entered input with an ability to recall and re-edit those inputs. It lets you register to listen for keystroke events and trigger custom key events yourself.}
   spec.homepage      = "https://piotrmurach.github.io/tty"
@@ -22,10 +22,10 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.0.0'
 
   spec.add_dependency "wisper", "~> 2.0.0"
-  spec.add_dependency "tty-screen", "~> 0.6.4"
+  spec.add_dependency "tty-screen", "~> 0.7"
   spec.add_dependency "tty-cursor", "~> 0.6.0"
 
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake",    "~> 12.0"
+  spec.add_development_dependency "bundler", ">= 1.5.0"
+  spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec",   "~> 3.0"
 end
