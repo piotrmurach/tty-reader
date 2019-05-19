@@ -140,7 +140,14 @@ You can also provide a line prefix displayed before input by passing it as a fir
 
 ```ruby
 reader.read_line(">> ")
-# >> input goes here ...
+# >>
+```
+
+To pre-populate the line content for editing use `:value` option:
+
+```ruby
+reader.read_line("> ", value: "edit me")
+# > edit me
 ```
 
 ### 2.3 read_multiline
