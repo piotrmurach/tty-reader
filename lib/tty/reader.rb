@@ -215,6 +215,9 @@ module TTY
     # @param [String] prompt
     #   the prompt to display before input
     #
+    # @param [String] value
+    #   the value to pre-populate line with
+    #
     # @param [Boolean] echo
     #   if true echo back characters, output nothing otherwise
     #
