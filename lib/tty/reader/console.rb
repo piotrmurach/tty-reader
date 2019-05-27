@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'io/wait'
+
 require_relative 'keys'
 require_relative 'mode'
 
@@ -8,6 +10,8 @@ module TTY
     class Console
       ESC = "\e".freeze
       CSI = "\e[".freeze
+
+      TIMEOUT = 0.1
 
       # Key codes
       #
@@ -43,14 +47,12 @@ module TTY
         mode.raw(options[:raw]) do
           mode.echo(options[:echo]) do
             if options[:nonblock]
-              input.read_nonblock(1)
+              input.wait_readable(TIMEOUT) ? input.getc : nil
             else
               input.getc
             end
           end
         end
-      rescue IO::WaitReadable, EOFError
-        # no more bytes to read
       end
 
       protected
