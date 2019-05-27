@@ -11,6 +11,7 @@
 * Change Console#get_char :nonblock option to wait for readable input without blocking
 * Change to remove bundler version constraints
 * Change to update tty-screen dependency
+* Change to update tty-cursor dependency
 
 ## [v0.5.0] - 2018-11-24
 
