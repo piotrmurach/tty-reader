@@ -237,13 +237,13 @@ class MyListener
 end
 ```
 
-Then subcribing is done:
+Then subscribing is done:
 
 ```ruby
 reader.subscribe(MyListener.new)
 ```
 
-Alternatively, `subscribe` allows you to listen to events only for the dueration of block execution like so:
+Alternatively, `subscribe` allows you to listen to events only for the duration of block execution like so:
 
 ```ruby
 reader.subscribe(MyListener) do
@@ -297,7 +297,7 @@ The available key events for character input are:
 * `:keyalpha`
 * `:keynum`
 
-The navigation relted key events are:
+The navigation related key events are:
 
 * `:keydown`
 * `:keyup`
@@ -340,7 +340,7 @@ reader = TTY::Reader.new(interrupt: :signal)
 
 ### 3.2. `:track_history`
 
-The `read_line` and `read_multiline` provide history buffer that tracks all the lines entered during `TTY::Reader.new` interactions. The history buffer provides previoius or next lines when user presses up/down arrows respectively. However, if you wish to disable this behaviour use `:track_history` option like so:
+The `read_line` and `read_multiline` provide history buffer that tracks all the lines entered during `TTY::Reader.new` interactions. The history buffer provides previous or next lines when user presses up/down arrows respectively. However, if you wish to disable this behaviour use `:track_history` option like so:
 
 ```ruby
 reader = TTY::Reader.new(track_history: false)
@@ -364,7 +364,7 @@ reader = TTY::Reader.new(history_duplicates: false)
 
 ### 3.5. `:history_exclude`
 
-This option allows you to exclude lines from being stored in history. It accepts a `Proc` with a line as a first argument. By default it is set to exlude empty lines. To change this:
+This option allows you to exclude lines from being stored in history. It accepts a `Proc` with a line as a first argument. By default it is set to exclude empty lines. To change this:
 
 ```ruby
 reader = TTY::Reader.new(history_exclude: ->(line) { ... })
