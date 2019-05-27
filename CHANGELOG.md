@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.6.0] - 2019-05-19
+## [v0.6.0] - 2019-05-27
 
 ### Added
 * Add :value option to #read_line to allow pre-populating of line content
@@ -8,6 +8,7 @@
 ### Changed
 * Change to make InputInterrupt to derive from Interrupt by Samuel Williams(@ioquatix)
 * Change #read_line to trigger before line is printed to allow for line changes in key callbacks
+* Change Console#get_char :nonblock option to wait for readable input without blocking
 * Change to remove bundler version constraints
 * Change to update tty-screen dependency
 
