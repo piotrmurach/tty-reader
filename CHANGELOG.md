@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.6.1] - 2019-10-xx
+
+### Added
+* Add support for a multi-line prompt by Katelyn Schiesser(@slowbro)
+
 ## [v0.6.0] - 2019-05-27
 
 ### Added
