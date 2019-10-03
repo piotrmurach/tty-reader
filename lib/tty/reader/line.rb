@@ -236,7 +236,10 @@ module TTY
       #
       # @api public
       def prompt_size
-        self.class.sanitize(@prompt).size
+        p = self.class.sanitize(@prompt).split(/\r?\n/)
+        # return the length of each line + screen width for every line past the first
+        # which accounts for multi-line prompts
+        p.join.length + ((p.length - 1) * TTY::Screen.width )
       end
 
       # Text size
