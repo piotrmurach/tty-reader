@@ -93,4 +93,27 @@ RSpec.describe TTY::Reader, '#read_line' do
 
     expect(answer).to eq("한글")
   end
+
+  it "supports multiline prompts" do
+    allow(TTY::Screen).to receive(:width).and_return(50)
+    prompt = "one\ntwo\nthree"
+    input << "aa\n"
+    input.rewind
+
+    answer = reader.read_line(prompt)
+
+    expect(answer).to eq("aa\n")
+    expect(output.string).to eq([
+      prompt,
+      "\e[2K\e[1G\e[1A" * 2,
+      "\e[2K\e[1G",
+      prompt + "a",
+      "\e[2K\e[1G\e[1A" * 2,
+      "\e[2K\e[1G",
+      prompt + "aa",
+      "\e[2K\e[1G\e[1A" * 2,
+      "\e[2K\e[1G",
+      prompt + "aa\n"
+    ].join)
+  end
 end
