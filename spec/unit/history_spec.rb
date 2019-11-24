@@ -13,7 +13,7 @@ RSpec.describe TTY::Reader::History do
   end
 
   it "allows to cycle through non-empty buffer" do
-    history = described_class.new(3, {cycle: true})
+    history = described_class.new(3, cycle: true)
     history << "line"
     expect(history.next?).to eq(true)
     expect(history.previous?).to eq(true)
