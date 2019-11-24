@@ -4,6 +4,7 @@
 
 ### Added
 * Add support for a multi-line prompt by Katelyn Schiesser(@slowbro)
+* Add metadata to gemspec
 
 ## [v0.6.0] - 2019-05-27
 
