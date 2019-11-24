@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.6.1] - 2019-10-xx
+## [v0.7.0] - 2019-11-24
 
 ### Added
 * Add support for a multi-line prompt by Katelyn Schiesser(@slowbro)
@@ -65,6 +65,7 @@
 
 * Initial implementation and release
 
+[v0.7.0]: https://github.com/piotrmurach/tty-reader/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/piotrmurach/tty-reader/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/piotrmurach/tty-reader/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-reader/compare/v0.3.0...v0.4.0
