@@ -17,6 +17,7 @@ end
 
 require "bundler/setup"
 require "tty-reader"
+require "stringio"
 
 class StringIO
   def wait_readable(*)
