@@ -112,6 +112,7 @@ To read a single key stroke from the user use `read_char` or `read_keypress`:
 ```ruby
 reader.read_char
 reader.read_keypress
+reader.read_keypress(nonblock: true)
 ```
 
 ### 2.2 read_line
