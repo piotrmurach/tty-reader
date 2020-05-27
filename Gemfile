@@ -1,20 +1,16 @@
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-
 gemspec
 
-group :test do
-  gem 'benchmark-ips', '~> 2.7.2'
-  gem 'simplecov', '~> 0.16.1'
-  gem 'coveralls', '~> 0.8.22'
-end
+gem "tty-screen", "~> 0.8.0", git: "https://github.com/piotrmurach/tty-screen"
 
-group :tools do
-  gem 'byebug', platform: :mri
+group :test do
+  gem "benchmark-ips", "~> 2.7.2"
+  gem "simplecov", "~> 0.16.1"
+  gem "coveralls", "~> 0.8.22"
 end
 
 group :metrics do
-  gem 'yard',      '~> 0.9'
-  gem 'yardstick', '~> 0.9.9'
+  gem "yard",      "~> 0.9"
+  gem "yardstick", "~> 0.9.9"
 end
