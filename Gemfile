@@ -2,8 +2,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "tty-screen", "~> 0.8.0", git: "https://github.com/piotrmurach/tty-screen"
-
 group :test do
   gem "benchmark-ips", "~> 2.7.2"
   gem "simplecov", "~> 0.16.1"
