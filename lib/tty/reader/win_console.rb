@@ -5,9 +5,9 @@ require_relative 'keys'
 module TTY
   class Reader
     class WinConsole
-      ESC     = "\e".freeze
-      NUL_HEX = "\x00".freeze
-      EXT_HEX = "\xE0".freeze
+      ESC     = "\e"
+      NUL_HEX = "\x00"
+      EXT_HEX = "\xE0"
 
       # Key codes
       #

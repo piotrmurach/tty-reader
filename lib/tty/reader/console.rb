@@ -8,8 +8,8 @@ require_relative 'mode'
 module TTY
   class Reader
     class Console
-      ESC = "\e".freeze
-      CSI = "\e[".freeze
+      ESC = "\e"
+      CSI = "\e["
 
       TIMEOUT = 0.1
 
