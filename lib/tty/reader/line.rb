@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
 module TTY
   class Reader
@@ -15,7 +15,7 @@ module TTY
       #
       # @api public
       def self.sanitize(text)
-        text.dup.gsub(ANSI_MATCHER, '')
+        text.dup.gsub(ANSI_MATCHER, "")
       end
 
       # The editable text
@@ -37,7 +37,7 @@ module TTY
       # Create a Line instance
       #
       # @api private
-      def initialize(text = '', prompt: '')
+      def initialize(text = "", prompt: "")
         @prompt = prompt.dup
         @text   = text.dup
         @cursor = [0, @text.length].max
@@ -138,9 +138,9 @@ module TTY
       #   the characters to insert
       #
       # @example
-      #   text = 'aaa'
-      #   line[5]= 'b'
-      #   => 'aaa  b'
+      #   text = "aaa"
+      #   line[5]= "b"
+      #   => "aaa  b"
       #
       # @api public
       def []=(i, chars)
@@ -153,7 +153,7 @@ module TTY
         end
 
         if i <= 0
-          before_text = ''
+          before_text = ""
           after_text = @text.dup
         elsif i > @text.length - 1 # insert outside of line input
           before_text = @text.dup

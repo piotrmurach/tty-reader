@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'keys'
+require_relative "keys"
 
 module TTY
   class Reader
@@ -24,7 +24,7 @@ module TTY
       attr_reader :escape_codes
 
       def initialize(input)
-        require_relative 'win_api'
+        require_relative "win_api"
         @input = input
         @keys = Keys.ctrl_keys.merge(Keys.win_keys)
         @escape_codes = [[NUL_HEX.ord], [ESC.ord], EXT_HEX.bytes.to_a]

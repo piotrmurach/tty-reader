@@ -13,12 +13,12 @@ module TTY
           ?\C-e => :ctrl_e,
           ?\C-f => :ctrl_f,
           ?\C-g => :ctrl_g,
-          ?\C-h => :ctrl_h, # identical to '\b'
-          ?\C-i => :ctrl_i, # identical to '\t'
-          ?\C-j => :ctrl_j, # identical to '\n'
+          ?\C-h => :ctrl_h, # identical to "\b"
+          ?\C-i => :ctrl_i, # identical to "\t"
+          ?\C-j => :ctrl_j, # identical to "\n"
           ?\C-k => :ctrl_k,
           ?\C-l => :ctrl_l,
-          ?\C-m => :ctrl_m, # identical to '\r'
+          ?\C-m => :ctrl_m, # identical to "\r"
           ?\C-n => :ctrl_n,
           ?\C-o => :ctrl_o,
           ?\C-p => :ctrl_p,
@@ -133,18 +133,18 @@ module TTY
           "\e" => :escape,
           " "  => :space,
           "\b" => :backspace,
-          [224, 71].pack('U*') => :home,
-          [224, 79].pack('U*') => :end,
-          [224, 82].pack('U*') => :insert,
-          [224, 83].pack('U*') => :delete,
-          [224, 73].pack('U*') => :page_up,
-          [224, 81].pack('U*') => :page_down,
+          [224, 71].pack("U*") => :home,
+          [224, 79].pack("U*") => :end,
+          [224, 82].pack("U*") => :insert,
+          [224, 83].pack("U*") => :delete,
+          [224, 73].pack("U*") => :page_up,
+          [224, 81].pack("U*") => :page_down,
 
-          [224, 72].pack('U*') => :up,
-          [224, 80].pack('U*') => :down,
-          [224, 77].pack('U*') => :right,
-          [224, 75].pack('U*') => :left,
-          [224, 83].pack('U*') => :clear,
+          [224, 72].pack("U*") => :up,
+          [224, 80].pack("U*") => :down,
+          [224, 77].pack("U*") => :right,
+          [224, 75].pack("U*") => :left,
+          [224, 83].pack("U*") => :clear,
 
           "\x00;" => :f1,
           "\x00<" => :f2,

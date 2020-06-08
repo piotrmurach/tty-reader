@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
 module TTY
   class Reader
@@ -121,7 +121,7 @@ module TTY
         end
         line = @history[index]
         if line.nil?
-          raise IndexError, 'invalid index'
+          raise IndexError, "invalid index"
         end
         line.dup
       end

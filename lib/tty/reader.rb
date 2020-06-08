@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'tty-cursor'
-require 'tty-screen'
-require 'wisper'
+require "tty-cursor"
+require "tty-screen"
+require "wisper"
 
-require_relative 'reader/history'
-require_relative 'reader/line'
-require_relative 'reader/key_event'
-require_relative 'reader/console'
-require_relative 'reader/win_console'
-require_relative 'reader/version'
+require_relative "reader/history"
+require_relative "reader/line"
+require_relative "reader/key_event"
+require_relative "reader/console"
+require_relative "reader/win_console"
+require_relative "reader/version"
 
 module TTY
   # A class responsible for reading character input from STDIN
@@ -31,7 +31,7 @@ module TTY
     #
     # @api public
     def self.windows?
-      ::File::ALT_SEPARATOR == '\\'
+      ::File::ALT_SEPARATOR == "\\"
     end
 
     attr_reader :input
@@ -74,7 +74,7 @@ module TTY
 
       @track_history = options.fetch(:track_history) { true }
       @history_cycle = options.fetch(:history_cycle) { false }
-      exclude_proc   = ->(line) { line.strip == '' }
+      exclude_proc   = ->(line) { line.strip == "" }
       @history_exclude    = options.fetch(:history_exclude) { exclude_proc }
       @history_duplicates = options.fetch(:history_duplicates) { false }
 
@@ -131,7 +131,7 @@ module TTY
     #
     # @api private
     def select_console(input)
-      if self.class.windows? && !env['TTY_TEST']
+      if self.class.windows? && !env["TTY_TEST"]
         WinConsole.new(input)
       else
         Console.new(input)
@@ -172,7 +172,7 @@ module TTY
     def read_keypress(options = {})
       opts  = { echo: false, raw: true }.merge(options)
       codes = unbufferred { get_codes(opts) }
-      char  = codes ? codes.pack('U*') : nil
+      char  = codes ? codes.pack("U*") : nil
 
       trigger_key_event(char) if char
       char
@@ -224,16 +224,16 @@ module TTY
     # @return [String]
     #
     # @api public
-    def read_line(prompt = '', **options)
+    def read_line(prompt = "", **options)
       opts = { echo: true, raw: true }.merge(options)
-      value = options.fetch(:value, '')
+      value = options.fetch(:value, "")
       line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
 
       output.print(line)
 
       while (codes = get_codes(opts)) && (code = codes[0])
-        char = codes.pack('U*')
+        char = codes.pack("U*")
 
         if [:ctrl_d, :ctrl_z].include?(console.keys[char])
           trigger_key_event(char, line: line.to_s)
@@ -256,7 +256,7 @@ module TTY
         elsif console.keys[char] == :up
           line.replace(history_previous) if history_previous?
         elsif console.keys[char] == :down
-          line.replace(history_next? ? history_next : '')
+          line.replace(history_next? ? history_next : "")
         elsif console.keys[char] == :left
           line.left
         elsif console.keys[char] == :right
@@ -277,7 +277,7 @@ module TTY
           if opts[:raw]
             output.print("\e[1X") unless line.start?
           else
-            output.print(?\s + (line.start? ? '' : ?\b))
+            output.print(?\s + (line.start? ? "" : ?\b))
           end
         end
 
@@ -362,7 +362,7 @@ module TTY
       lines = []
       loop do
         line = read_line(*args)
-        break if !line || line == ''
+        break if !line || line == ""
         next  if line !~ /\S/ && !@stop
         if block_given?
           yield(line) unless line.to_s.empty?
@@ -431,7 +431,7 @@ module TTY
     # @return [nil]
     #
     # @api private
-    def trigger_key_event(char, line: '')
+    def trigger_key_event(char, line: "")
       event = KeyEvent.from(console.keys, char, line)
       trigger(:"key#{event.key.name}", event) if event.trigger?
       trigger(:keypress, event)
@@ -443,7 +443,7 @@ module TTY
     def handle_interrupt
       case @interrupt
       when :signal
-        Process.kill('SIGINT', Process.pid)
+        Process.kill("SIGINT", Process.pid)
       when :exit
         exit(130)
       when Proc

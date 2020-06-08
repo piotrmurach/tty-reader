@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'io/wait'
+require "io/wait"
 
-require_relative 'keys'
-require_relative 'mode'
+require_relative "keys"
+require_relative "mode"
 
 module TTY
   class Reader

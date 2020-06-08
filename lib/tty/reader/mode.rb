@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'io/console'
+require "io/console"
 
 module TTY
   class Reader

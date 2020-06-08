@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'keys'
+require_relative "keys"
 
 module TTY
   class Reader
@@ -26,7 +26,7 @@ module TTY
       # @return [KeyEvent]
       #
       # @api public
-      def self.from(keys, char, line = '')
+      def self.from(keys, char, line = "")
         key = Key.new
         key.name = (name = keys[char]) ? name : :ignore
 
