@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Reader, '#read_keypress' do
+RSpec.describe TTY::Reader, "#read_keypress" do
   let(:input)  { StringIO.new }
   let(:out)    { StringIO.new }
   let(:env)    { { "TTY_TEST" => true } }
@@ -15,7 +15,7 @@ RSpec.describe TTY::Reader, '#read_keypress' do
     expect(answer).to eq("\e[A")
   end
 
-  it 'reads multibyte key press' do
+  it "reads multibyte key press" do
     reader = described_class.new(input: input, output: out, env: env)
     input << "ㄱ"
     input.rewind
@@ -25,7 +25,7 @@ RSpec.describe TTY::Reader, '#read_keypress' do
     expect(answer).to eq("ㄱ")
   end
 
-  context 'when Ctrl+C pressed' do
+  context "when Ctrl+C pressed" do
     it "defaults to raising InputInterrupt" do
       reader = described_class.new(input: input, output: out, env: env)
       input << "\x03"
@@ -47,7 +47,7 @@ RSpec.describe TTY::Reader, '#read_keypress' do
 
       allow(Process).to receive(:pid).and_return(666)
       allow(Process).to receive(:kill)
-      expect(Process).to receive(:kill).with('SIGINT', 666)
+      expect(Process).to receive(:kill).with("SIGINT", 666)
 
       reader.read_keypress
     end

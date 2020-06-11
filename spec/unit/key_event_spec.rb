@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'shellwords'
+require "shellwords"
 
-RSpec.describe TTY::Reader::KeyEvent, '#from' do
+RSpec.describe TTY::Reader::KeyEvent, "#from" do
   let(:keys) { TTY::Reader::Keys.keys }
 
   it "parses backspace" do
@@ -12,25 +12,25 @@ RSpec.describe TTY::Reader::KeyEvent, '#from' do
   end
 
   it "parses lowercase char" do
-    event = described_class.from(keys, 'a')
+    event = described_class.from(keys, "a")
     expect(event.key.name).to eq(:alpha)
-    expect(event.value).to eq('a')
+    expect(event.value).to eq("a")
   end
 
   it "parses uppercase char" do
-    event = described_class.from(keys, 'A')
+    event = described_class.from(keys, "A")
     expect(event.key.name).to eq(:alpha)
-    expect(event.value).to eq('A')
+    expect(event.value).to eq("A")
   end
 
   it "parses number char" do
-    event = described_class.from(keys, '666')
+    event = described_class.from(keys, "666")
     expect(event.key.name).to eq(:num)
-    expect(event.value).to eq('666')
+    expect(event.value).to eq("666")
   end
 
   it "parses ctrl-a to ctrl-z inputs" do
-    (1..26).zip('a'..'z').each do |code, char|
+    (1..26).zip("a".."z").each do |code, char|
       event = described_class.from(TTY::Reader::Keys.ctrl_keys, code.chr)
       expect(event.key.name).to eq(:"ctrl_#{char}")
       expect(event.value).to eq(code.chr)
@@ -39,14 +39,14 @@ RSpec.describe TTY::Reader::KeyEvent, '#from' do
 
   it "parses uknown key" do
     no_keys = {}
-    event = described_class.from(no_keys, '*')
+    event = described_class.from(no_keys, "*")
     expect(event.key.name).to eq(:ignore)
-    expect(event.value).to eq('*')
+    expect(event.value).to eq("*")
   end
 
   it "exposes line value" do
-    event = described_class.from(keys, 'c', 'ab')
-    expect(event.line).to eq('ab')
+    event = described_class.from(keys, "c", "ab")
+    expect(event.line).to eq("ab")
   end
 
   # F1-F12 keys

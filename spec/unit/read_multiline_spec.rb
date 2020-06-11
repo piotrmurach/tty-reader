@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Reader, '#read_multiline' do
+RSpec.describe TTY::Reader, "#read_multiline" do
   let(:input)  { StringIO.new }
   let(:output) { StringIO.new }
   let(:env)    { { "TTY_TEST" => true } }
 
   subject(:reader) { described_class.new(input: input, output: output, env: env) }
 
-  it 'reads no lines' do
+  it "reads no lines" do
     input << "\C-d"
     input.rewind
     answer = reader.read_multiline
@@ -28,7 +28,7 @@ RSpec.describe TTY::Reader, '#read_multiline' do
     expect(answer).to eq(["Single line"])
   end
 
-  it 'reads few lines' do
+  it "reads few lines" do
     input << "First line\nSecond line\nThird line\n\C-d"
     input.rewind
     answer = reader.read_multiline
@@ -42,7 +42,7 @@ RSpec.describe TTY::Reader, '#read_multiline' do
     expect(answer).to eq(["First line\n", "Second line"])
   end
 
-  it 'reads and yiels every line' do
+  it "reads and yiels every line" do
     input << "First line\nSecond line\nThird line\C-z"
     input.rewind
     lines = []
@@ -50,15 +50,15 @@ RSpec.describe TTY::Reader, '#read_multiline' do
     expect(lines).to eq(["First line\n", "Second line\n", "Third line"])
   end
 
-  it 'reads multibyte lines' do
+  it "reads multibyte lines" do
     input << "국경의 긴 터널을 빠져나오자\n설국이었다.\C-d"
     input.rewind
     lines = []
     reader.read_multiline { |line| lines << line }
-    expect(lines).to eq(["국경의 긴 터널을 빠져나오자\n", '설국이었다.'])
+    expect(lines).to eq(["국경의 긴 터널을 빠져나오자\n", "설국이었다."])
   end
 
-  it 'reads lines with a prompt' do
+  it "reads lines with a prompt" do
     input << "1\n2\n3\C-d"
     input.rewind
     reader.read_multiline(">> ")

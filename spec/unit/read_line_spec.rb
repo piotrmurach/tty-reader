@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Reader, '#read_line' do
+RSpec.describe TTY::Reader, "#read_line" do
   let(:input)  { StringIO.new }
   let(:output) { StringIO.new }
   let(:env)    { { "TTY_TEST" => true } }
 
   subject(:reader) { described_class.new(input: input, output: output, env: env) }
 
-  it 'masks characters' do
+  it "masks characters" do
     input << "password\n"
     input.rewind
 
@@ -50,7 +50,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     input << "aa\n"
     input.rewind
 
-    answer = reader.read_line('>> ')
+    answer = reader.read_line(">> ")
 
     expect(answer).to eq("aa\n")
     expect(output.string).to eq([
@@ -76,7 +76,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     ].join)
   end
 
-  it 'deletes characters when backspace pressed' do
+  it "deletes characters when backspace pressed" do
     input << "aa\ba\bcc\n"
     input.rewind
 
@@ -85,7 +85,7 @@ RSpec.describe TTY::Reader, '#read_line' do
     expect(answer).to eq("acc\n")
   end
 
-  it 'reads multibyte line' do
+  it "reads multibyte line" do
     input << "한글"
     input.rewind
 

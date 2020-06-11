@@ -139,11 +139,11 @@ RSpec.describe TTY::Reader::History do
     history << "line #2"
     history << "line #3"
 
-    expect(history[-1]).to eq('line #3')
-    expect(history[1]).to eq('line #2')
+    expect(history[-1]).to eq("line #3")
+    expect(history[1]).to eq("line #2")
     expect {
       history[11]
-    }.to raise_error(IndexError, 'invalid index')
+    }.to raise_error(IndexError, "invalid index")
   end
 
   it "retrieves current line" do

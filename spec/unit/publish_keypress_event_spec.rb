@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Reader, '#publish_keypress_event' do
+RSpec.describe TTY::Reader, "#publish_keypress_event" do
   let(:input) { StringIO.new }
   let(:out)   { StringIO.new }
   let(:env)   { { "TTY_TEST" => true } }
@@ -103,7 +103,7 @@ RSpec.describe TTY::Reader, '#publish_keypress_event' do
     reader.on(:keyctrl_z) { |event| keys << "ctrl_z" }
 
     answer = reader.read_keypress
-    expect(keys).to eq(['ctrl_z'])
+    expect(keys).to eq(["ctrl_z"])
     expect(answer).to eq(?\C-z)
   end
 end
