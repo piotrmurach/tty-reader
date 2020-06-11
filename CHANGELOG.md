@@ -1,5 +1,11 @@
 # Change log
 
+## [v0.8.0] - 2020-06-xx
+
+### Changed
+* Change gemspec to load version directly and remove test artefacts
+* Change to update tty-screen dependency
+
 ## [v0.7.0] - 2019-11-24
 
 ### Added
@@ -66,6 +72,7 @@
 
 * Initial implementation and release
 
+[v0.8.0]: https://github.com/piotrmurach/tty-reader/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/piotrmurach/tty-reader/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/piotrmurach/tty-reader/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/piotrmurach/tty-reader/compare/v0.4.0...v0.5.0
