@@ -1,10 +1,11 @@
 # Change log
 
-## [v0.8.0] - 2020-06-xx
+## [v0.8.0] - 2020-06-28
 
 ### Changed
 * Change gemspec to load version directly and remove test artefacts
 * Change to update tty-screen dependency
+* Change to remove bundler dev dependency and relax wisper version
 
 ## [v0.7.0] - 2019-11-24
 
