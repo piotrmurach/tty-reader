@@ -257,7 +257,7 @@ module TTY
         char = codes.pack("U*")
 
         if EXIT_KEYS.include?(console.keys[char])
-          trigger_key_event(char, line: line.to_s)
+          trigger_key_event(char, line: line)
           break
         end
 
@@ -304,7 +304,7 @@ module TTY
         end
 
         # trigger before line is printed to allow for line changes
-        trigger_key_event(char, line: line.to_s)
+        trigger_key_event(char, line: line)
 
         if raw && echo
           output.print(line.to_s)
@@ -471,7 +471,7 @@ module TTY
     # @return [nil]
     #
     # @api private
-    def trigger_key_event(char, line: "")
+    def trigger_key_event(char, line: nil)
       event = KeyEvent.from(console.keys, char, line)
       trigger(:"key#{event.key.name}", event) if event.trigger?
       trigger(:keypress, event)
