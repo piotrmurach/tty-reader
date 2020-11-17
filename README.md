@@ -194,7 +194,7 @@ The `KeyEvent` object is yielded to a block whenever a particular key event fire
 
 * `key`   - key pressed
 * `value` - value of the key pressed
-* `line`  - the content of the currently edited line, empty otherwise
+* `line`  - the `Line` object of the currently edited line, nil otherwise
 
 The `value` returns the actual key pressed and the `line` the content for the currently edited line or is empty.
 

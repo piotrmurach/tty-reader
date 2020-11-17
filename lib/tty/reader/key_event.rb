@@ -26,7 +26,7 @@ module TTY
       # @return [KeyEvent]
       #
       # @api public
-      def self.from(keys, char, line = "")
+      def self.from(keys, char, line = nil)
         key = Key.new
         key.name = (name = keys[char]) ? name : :ignore
 
