@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.9.0] - 2020-xx-yy
+
+### Changed
+* Pressing :down no longer erases the #read_line input if history is disabled by Charles Pence (@pencechp)
+
 ## [v0.8.0] - 2020-06-28
 
 ### Changed
