@@ -256,7 +256,7 @@ module TTY
         elsif console.keys[char] == :up
           line.replace(history_previous) if history_previous?
         elsif console.keys[char] == :down
-          line.replace(history_next? ? history_next : "")
+          line.replace(history_next? ? history_next : "") if track_history?
         elsif console.keys[char] == :left
           line.left
         elsif console.keys[char] == :right
