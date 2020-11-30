@@ -229,6 +229,7 @@ module TTY
       value = options.fetch(:value, "")
       line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
+      buffer = ""
 
       output.print(line)
 
@@ -256,7 +257,7 @@ module TTY
         elsif console.keys[char] == :up
           line.replace(history_previous) if history_previous?
         elsif console.keys[char] == :down
-          line.replace(history_next? ? history_next : "") if track_history?
+          line.replace(history_next? ? history_next : buffer) if track_history
         elsif console.keys[char] == :left
           line.left
         elsif console.keys[char] == :right
@@ -271,6 +272,7 @@ module TTY
             line.move_to_end
           end
           line.insert(char)
+          buffer = line.text
         end
 
         if (console.keys[char] == :backspace || BACKSPACE == code) && opts[:echo]
@@ -294,6 +296,7 @@ module TTY
         end
 
         if [CARRIAGE_RETURN, NEWLINE].include?(code)
+          buffer = ""
           output.puts unless opts[:echo]
           break
         end

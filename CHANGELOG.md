@@ -1,6 +1,10 @@
 # Change log
 
-## [v0.9.0] - 2020-xx-yy
+## [v0.9.0] - unreleased
+
+### Added
+* Add buffer to save input when traversing history and restore it back
+  similar to shell
 
 ### Changed
 * Pressing :down no longer erases the #read_line input if history is disabled by Charles Pence (@pencechp)
@@ -78,6 +82,7 @@
 
 * Initial implementation and release
 
+[v0.9.0]: https://github.com/piotrmurach/tty-reader/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://github.com/piotrmurach/tty-reader/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/piotrmurach/tty-reader/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/piotrmurach/tty-reader/compare/v0.5.0...v0.6.0
