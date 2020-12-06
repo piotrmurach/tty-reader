@@ -6,6 +6,7 @@ skip_commits:
     - "examples/**"
     - "*.md"
 install:
+  - SET BUNDLE_SSL_VERIFY_MODE=0
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
