@@ -87,4 +87,24 @@ RSpec.describe TTY::Reader, "#read_multiline" do
     expect(lines).to eq(["1\n", "2\n", "3\n"])
     expect(output.string).to eq("\n\n\n")
   end
+
+  it "sets initial input line" do
+    input << "aa\nbb\n"
+    input.rewind
+
+    lines = reader.read_multiline("> ", value: "xx")
+
+    expect(lines).to eq(["xxaa\n", "bb\n"])
+    expect(output.string).to eq([
+      "> xx",
+      "\e[2K\e[1G> xxa",
+      "\e[2K\e[1G> xxaa",
+      "\e[2K\e[1G> xxaa\n",
+      "> ",
+      "\e[2K\e[1G> b",
+      "\e[2K\e[1G> bb",
+      "\e[2K\e[1G> bb\n",
+      "> "
+    ].join)
+  end
 end

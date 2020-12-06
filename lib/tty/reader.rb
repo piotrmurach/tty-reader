@@ -391,10 +391,13 @@ module TTY
                        nonblock: false)
       @stop = false
       lines = []
+      empty_str = ""
+
       loop do
         line = read_line(prompt, value: value, echo: echo, raw: raw,
                                  nonblock: nonblock)
-        break if !line || line == ""
+        value = empty_str unless value.empty? # reset
+        break if !line || line == empty_str
         next  if line !~ /\S/ && !@stop
 
         if block_given?
@@ -404,6 +407,7 @@ module TTY
         end
         break if @stop
       end
+
       lines
     end
     alias read_lines read_multiline
