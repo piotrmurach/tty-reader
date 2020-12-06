@@ -8,6 +8,12 @@
 
 ### Changed
 * Pressing :down no longer erases the #read_line input if history is disabled by Charles Pence (@pencechp)
+* Change Reader initializer to use keyword arguments in place of options hash
+* Change history to only exclude empty lines without any space or invisible characters
+* Change all input reading methods to use explicit keyword arguments
+
+### Fix
+* Fix #read_multiline :value parameter to insert content only once in the first line
 
 ## [v0.8.0] - 2020-06-28
 
