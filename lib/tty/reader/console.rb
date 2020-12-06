@@ -36,17 +36,20 @@ module TTY
 
       # Get a character from console with echo
       #
-      # @param [Hash[Symbol]] options
-      # @option options [Symbol] :echo
-      #   the echo toggle
+      # @param [Boolean] echo
+      #   whether to echo input back or not, defaults to true
+      # @param [Boolean] raw
+      #   whether to use raw mode or not, defaults to false
+      # @param [Boolean] nonblock
+      #   whether to wait for input or not, defaults to false
       #
       # @return [String]
       #
       # @api private
-      def get_char(options)
-        mode.raw(options[:raw]) do
-          mode.echo(options[:echo]) do
-            if options[:nonblock]
+      def get_char(echo: true, raw: false, nonblock: false)
+        mode.raw(raw) do
+          mode.echo(echo) do
+            if nonblock
               input.wait_readable(TIMEOUT) ? input.getc : nil
             else
               input.getc

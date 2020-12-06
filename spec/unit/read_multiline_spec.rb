@@ -53,15 +53,19 @@ RSpec.describe TTY::Reader, "#read_multiline" do
   it "reads multibyte lines" do
     input << "국경의 긴 터널을 빠져나오자\n설국이었다.\C-d"
     input.rewind
-    lines = []
-    reader.read_multiline { |line| lines << line }
+
+    lines = reader.read_multiline
+
     expect(lines).to eq(["국경의 긴 터널을 빠져나오자\n", "설국이었다."])
   end
 
   it "reads lines with a prompt" do
     input << "1\n2\n3\C-d"
     input.rewind
-    reader.read_multiline(">> ")
+
+    lines = reader.read_multiline(">> ")
+
+    expect(lines).to eq(["1\n", "2\n", "3"])
     expect(output.string).to eq([
       ">> ",
       "\e[2K\e[1G>> 1",
@@ -72,5 +76,15 @@ RSpec.describe TTY::Reader, "#read_multiline" do
       ">> ",
       "\e[2K\e[1G>> 3",
     ].join)
+  end
+
+  it "reads lines with echo off" do
+    input << "1\n2\n3\n"
+    input.rewind
+
+    lines = reader.read_multiline(echo: false)
+
+    expect(lines).to eq(["1\n", "2\n", "3\n"])
+    expect(output.string).to eq("\n\n\n")
   end
 end

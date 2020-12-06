@@ -163,24 +163,26 @@ module TTY
       output.sync = bufferring
     end
 
-    # Read a keypress  including invisible multibyte codes
-    # and return a character as a string.
+    # Read a keypress including invisible multibyte codes and return
+    # a character as a string.
     # Nothing is echoed to the console. This call will block for a
     # single keypress, but will not wait for Enter to be pressed.
     #
-    # @param [Hash[Symbol]] options
-    # @option options [Boolean] echo
+    # @param [Boolean] echo
     #   whether to echo chars back or not, defaults to false
-    # @option options [Boolean] raw
-    #   whenther raw mode enabled, defaults to true
+    # @option [Boolean] raw
+    #   whenther raw mode is enabled, defaults to true
+    # @option [Boolean] nonblock
+    #   whether to wait for input or not, defaults to false
     #
     # @return [String]
     #
     # @api public
-    def read_keypress(options = {})
-      opts  = { echo: false, raw: true }.merge(options)
-      codes = unbufferred { get_codes(opts) }
-      char  = codes ? codes.pack("U*") : nil
+    def read_keypress(echo: false, raw: true, nonblock: false)
+      codes = unbufferred do
+        get_codes(echo: echo, raw: raw, nonblock: nonblock)
+      end
+      char = codes ? codes.pack("U*") : nil
 
       trigger_key_event(char) if char
       char
@@ -189,19 +191,24 @@ module TTY
 
     # Get input code points
     #
-    # @param [Hash[Symbol]] options
+    # @param [Boolean] echo
+    #   whether to echo chars back or not, defaults to false
+    # @option [Boolean] raw
+    #   whenther raw mode is enabled, defaults to true
+    # @option [Boolean] nonblock
+    #   whether to wait for input or not, defaults to false
     # @param [Array[Integer]] codes
+    #   the currently read char code points
     #
     # @return [Array[Integer]]
     #
     # @api private
-    def get_codes(options = {}, codes = [])
-      opts = { echo: true, raw: false }.merge(options)
-      char = console.get_char(opts)
+    def get_codes(echo: true, raw: false, nonblock: false, codes: [])
+      char = console.get_char(echo: echo, raw: raw, nonblock: nonblock)
       handle_interrupt if console.keys[char] == :ctrl_c
       return if char.nil?
-      codes << char.ord
 
+      codes << char.ord
       condition = proc { |escape|
         (codes - escape).empty? ||
         (escape - codes).empty? &&
@@ -209,7 +216,8 @@ module TTY
       }
 
       while console.escape_codes.any?(&condition)
-        char_codes = get_codes(options.merge(nonblock: true), codes)
+        char_codes = get_codes(echo: echo, raw: raw,
+                               nonblock: true, codes: codes)
         break if char_codes.nil?
       end
 
@@ -222,26 +230,27 @@ module TTY
     #
     # @param [String] prompt
     #   the prompt to display before input
-    #
     # @param [String] value
     #   the value to pre-populate line with
-    #
     # @param [Boolean] echo
-    #   if true echo back characters, output nothing otherwise
+    #   whether to echo chars back or not, defaults to false
+    # @option [Boolean] raw
+    #   whenther raw mode is enabled, defaults to true
+    # @option [Boolean] nonblock
+    #   whether to wait for input or not, defaults to false
     #
     # @return [String]
     #
     # @api public
-    def read_line(prompt = "", **options)
-      opts = { echo: true, raw: true }.merge(options)
-      value = options.fetch(:value, "")
+    def read_line(prompt = "", value: "", echo: true, raw: true, nonblock: false)
       line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
       buffer = ""
 
       output.print(line)
 
-      while (codes = get_codes(opts)) && (code = codes[0])
+      while (codes = get_codes(echo: echo, raw: raw, nonblock: nonblock)) &&
+            (code = codes[0])
         char = codes.pack("U*")
 
         if [:ctrl_d, :ctrl_z].include?(console.keys[char])
@@ -249,7 +258,7 @@ module TTY
           break
         end
 
-        if opts[:raw] && opts[:echo]
+        if raw && echo
           clear_display(line, screen_width)
         end
 
@@ -275,7 +284,7 @@ module TTY
         elsif console.keys[char] == :end
           line.move_to_end
         else
-          if opts[:raw] && code == CARRIAGE_RETURN
+          if raw && code == CARRIAGE_RETURN
             char = "\n"
             line.move_to_end
           end
@@ -283,8 +292,8 @@ module TTY
           buffer = line.text
         end
 
-        if (console.keys[char] == :backspace || BACKSPACE == code) && opts[:echo]
-          if opts[:raw]
+        if (console.keys[char] == :backspace || BACKSPACE == code) && echo
+          if raw
             output.print("\e[1X") unless line.start?
           else
             output.print(?\s + (line.start? ? "" : ?\b))
@@ -294,7 +303,7 @@ module TTY
         # trigger before line is printed to allow for line changes
         trigger_key_event(char, line: line.to_s)
 
-        if opts[:raw] && opts[:echo]
+        if raw && echo
           output.print(line.to_s)
           if char == "\n"
             line.move_to_start
@@ -305,13 +314,15 @@ module TTY
 
         if [CARRIAGE_RETURN, NEWLINE].include?(code)
           buffer = ""
-          output.puts unless opts[:echo]
+          output.puts unless echo
           break
         end
       end
-      if track_history? && opts[:echo]
+
+      if track_history? && echo
         add_to_history(line.text.rstrip)
       end
+
       line.text
     end
 
@@ -362,19 +373,30 @@ module TTY
     #
     # @param [String] prompt
     #   the prompt displayed before the input
+    # @param [String] value
+    #   the value to pre-populate line with
+    # @param [Boolean] echo
+    #   whether to echo chars back or not, defaults to false
+    # @option [Boolean] raw
+    #   whenther raw mode is enabled, defaults to true
+    # @option [Boolean] nonblock
+    #   whether to wait for input or not, defaults to false
     #
     # @yield [String] line
     #
     # @return [Array[String]]
     #
     # @api public
-    def read_multiline(*args)
+    def read_multiline(prompt = "", value: "", echo: true, raw: true,
+                       nonblock: false)
       @stop = false
       lines = []
       loop do
-        line = read_line(*args)
+        line = read_line(prompt, value: value, echo: echo, raw: raw,
+                                 nonblock: nonblock)
         break if !line || line == ""
         next  if line !~ /\S/ && !@stop
+
         if block_given?
           yield(line) unless line.to_s.empty?
         else
