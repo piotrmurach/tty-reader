@@ -16,7 +16,7 @@ module TTY
       DEFAULT_SIZE = 32 << 4
 
       # Default exclude
-      DEFAULT_EXCLUDE = ->(line) { line.strip == "" }
+      DEFAULT_EXCLUDE = ->(line) { line.chomp == "" }
 
       def_delegators :@history, :size, :length, :to_s, :inspect
 

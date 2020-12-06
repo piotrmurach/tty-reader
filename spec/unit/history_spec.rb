@@ -40,8 +40,16 @@ RSpec.describe TTY::Reader::History do
     expect(history.index).to eq(2)
   end
 
-  it "excludes items" do
-    exclude = proc { |line| /line #[23]/.match(line) }
+  it "excludes empty lines by default" do
+    history = described_class.new
+    history << ""
+    history << "   "
+
+    expect(history.to_a).to eq(["   "])
+  end
+
+  it "excludes lines matching pattern" do
+    exclude = ->(line) { /line #[23]/.match(line) }
     history = described_class.new(exclude: exclude)
     history << "line #1"
     history << "line #2"
