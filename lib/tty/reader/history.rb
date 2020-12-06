@@ -15,40 +15,63 @@ module TTY
       # Default maximum size
       DEFAULT_SIZE = 32 << 4
 
+      # Default exclude
+      DEFAULT_EXCLUDE = ->(line) { line.strip == "" }
+
       def_delegators :@history, :size, :length, :to_s, :inspect
 
       # Set and retrieve the maximum size of the buffer
       attr_accessor :max_size
 
+      # The current index
+      #
+      # @return [Integer]
+      #
+      # @api private
       attr_reader :index
 
+      # Decides whether or not to allow cycling through stored lines.
+      #
+      # @return [Boolean]
+      #
+      # @api public
       attr_accessor :cycle
 
+      # Decides wether or not duplicate lines are stored.
+      #
+      # @return [Boolean]
+      #
+      # @api public
       attr_accessor :duplicates
 
+      # Dictates which lines are stored.
+      #
+      # @return [Proc]
+      #
+      # @public
       attr_accessor :exclude
 
       # Create a History buffer
       #
-      # param [Integer] max_size
+      # @param [Integer] max_size
       #   the maximum size for history buffer
-      #
-      # param [Hash[Symbol]] options
-      # @option options [Boolean] :cycle
+      # @param [Boolean] cycle
       #   whether or not the history should cycle, false by default
-      # @option options [Boolean] :duplicates
+      # @param [Boolean] duplicates
       #   whether or not to store duplicates, true by default
-      # @option options [Boolean] :exclude
+      # @param [Boolean] exclude
       #   a Proc to exclude items from storing in history
       #
       # @api public
-      def initialize(max_size = DEFAULT_SIZE, **options)
+      def initialize(max_size = DEFAULT_SIZE, duplicates: true, cycle: false,
+                     exclude: DEFAULT_EXCLUDE)
         @max_size   = max_size
         @index      = nil
         @history    = []
-        @duplicates = options.fetch(:duplicates) { true }
-        @exclude    = options.fetch(:exclude) { proc {} }
-        @cycle      = options.fetch(:cycle) { false }
+        @duplicates = duplicates
+        @exclude    = exclude
+        @cycle      = cycle
+
         yield self if block_given?
       end
 
