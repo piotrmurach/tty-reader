@@ -1,4 +1,6 @@
-require_relative '../lib/tty-reader'
+# frozen_string_literal: true
+
+require_relative "../lib/tty-reader"
 
 reader = TTY::Reader.new
 
@@ -8,7 +10,7 @@ loop do
   print reader.cursor.clear_line
   print "=> "
   char = reader.read_keypress(nonblock: true)
-  if ?\C-x == char
+  if char == ?\C-x
     puts "Exiting..."
     exit
   elsif char

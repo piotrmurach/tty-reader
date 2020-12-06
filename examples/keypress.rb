@@ -1,4 +1,6 @@
-require_relative '../lib/tty-reader'
+# frozen_string_literal: true
+
+require_relative "../lib/tty-reader"
 
 reader = TTY::Reader.new
 
@@ -7,7 +9,7 @@ puts "Press a key (or Ctrl-X to exit)"
 loop do
   print "=> "
   char = reader.read_keypress
-  if ?\C-x == char
+  if char == ?\C-x
     puts "Exiting..."
     exit
   else
