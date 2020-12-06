@@ -59,30 +59,38 @@ module TTY
     #   the input stream
     # @param [IO] output
     #   the output stream
-    # @param [Hash] options
-    # @option options [Symbol] :interrupt
-    #   handling of Ctrl+C key out of :signal, :exit, :noop
-    # @option options [Boolean] :track_history
+    # @param [Symbol] interrupt
+    #   the way to handle the Ctrl+C key out of :signal, :exit, :noop
+    # @param [Hash] env
+    #   the environment variables
+    # @param [Boolean] track_history
     #   disable line history tracking, true by default
+    # @param [Boolean] history_cycle
+    #   allow cycling through history, false by default
+    # @param [Boolean] history_duplicates
+    #   allow duplicate entires, false by default
+    # @param [Proc] history_exclude
+    #   exclude lines from history, by default all lines are stored
     #
     # @api public
-    def initialize(**options)
-      @input     = options.fetch(:input) { $stdin }
-      @output    = options.fetch(:output) { $stdout }
-      @interrupt = options.fetch(:interrupt) { :error }
-      @env       = options.fetch(:env) { ENV }
-
-      @track_history = options.fetch(:track_history) { true }
-      @history_cycle = options.fetch(:history_cycle) { false }
-      exclude_proc   = ->(line) { line.strip == "" }
-      @history_exclude    = options.fetch(:history_exclude) { exclude_proc }
-      @history_duplicates = options.fetch(:history_duplicates) { false }
+    def initialize(input: $stdin, output: $stdout, interrupt: :error,
+                   env: ENV, track_history: true, history_cycle: false,
+                   history_exclude: History::DEFAULT_EXCLUDE,
+                   history_duplicates: false)
+      @input = input
+      @output = output
+      @interrupt = interrupt
+      @env = env
+      @track_history = track_history
+      @history_cycle = history_cycle
+      @history_exclude = history_exclude
+      @history_duplicates = history_duplicates
 
       @console   = select_console(input)
       @history   = History.new do |h|
-        h.cycle = @history_cycle
-        h.duplicates = @history_duplicates
-        h.exclude = @history_exclude
+        h.cycle = history_cycle
+        h.duplicates = history_duplicates
+        h.exclude = history_exclude
       end
       @stop = false # gathering input
       @cursor = TTY::Cursor
@@ -452,7 +460,7 @@ module TTY
       when Proc
         @interrupt.call
       when :noop
-        return
+        # Noop
       else
         raise InputInterrupt
       end
