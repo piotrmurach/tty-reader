@@ -20,6 +20,15 @@ module TTY
   class Reader
     include Wisper::Publisher
 
+    # Key codes
+    CARRIAGE_RETURN = 13
+    NEWLINE         = 10
+    BACKSPACE       = 8
+    DELETE          = 127
+
+    # Keys that terminate input
+    EXIT_KEYS = [:ctrl_d, :ctrl_z]
+
     # Raised when the user hits the interrupt key(Control-C)
     #
     # @api public
@@ -46,12 +55,6 @@ module TTY
     attr_reader :console
 
     attr_reader :cursor
-
-    # Key codes
-    CARRIAGE_RETURN = 13
-    NEWLINE         = 10
-    BACKSPACE       = 8
-    DELETE          = 127
 
     # Initialize a Reader
     #
@@ -253,7 +256,7 @@ module TTY
             (code = codes[0])
         char = codes.pack("U*")
 
-        if [:ctrl_d, :ctrl_z].include?(console.keys[char])
+        if EXIT_KEYS.include?(console.keys[char])
           trigger_key_event(char, line: line.to_s)
           break
         end
