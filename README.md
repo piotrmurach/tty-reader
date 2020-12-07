@@ -49,7 +49,7 @@ The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'tty-reader'
+gem "tty-reader"
 ```
 
 And then execute:
@@ -100,7 +100,7 @@ Finally, keep asking user for line input with a `=>` as a prompt:
 
 ```ruby
 loop do
-  reader.read_line('=> ')
+  reader.read_line("=> ")
 end
 ```
 
@@ -208,11 +208,11 @@ For example, to add listen to vim like navigation keys, one would do the followi
 
 ```ruby
 reader.on(:keypress) do |event|
-  if event.value == 'j'
+  if event.value == "j"
     ...
   end
 
-  if event.value == 'k'
+  if event.value == "k"
     ...
   end
 end
@@ -221,8 +221,8 @@ end
 You can subscribe to more than one event:
 
 ```ruby
-prompt.on(:keypress) { |key| ... }
-      .on(:keydown)  { |key| ... }
+reader.on(:keypress) { |event| ... }
+      .on(:keydown)  { |event| ... }
 ```
 
 ### 2.5 subscribe
@@ -275,10 +275,10 @@ To add vim bindings for line editing you could discern between alphanumeric inpu
 
 ```ruby
 reader.on(:keypress) do |event|
-  if event.value == 'j'
+  if event.value == "j"
     reader.trigger(:keydown)
   end
-  if evevnt.value == 'k'
+  if evevnt.value == "k"
     reader.trigger(:keyup)
   end
 end
