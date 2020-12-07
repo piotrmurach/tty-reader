@@ -78,9 +78,9 @@ module TTY
       # Iterates over history lines
       #
       # @api public
-      def each
+      def each(&block)
         if block_given?
-          @history.each { |line| yield line }
+          @history.each(&block)
         else
           @history.to_enum
         end
@@ -108,6 +108,7 @@ module TTY
       # @api public
       def next
         return if size.zero?
+
         if @index == size - 1
           @index = 0 if @cycle
         else
@@ -122,6 +123,7 @@ module TTY
       # Move the pointer to the previous line in the history
       def previous
         return if size.zero?
+
         if @index.zero?
           @index = size - 1 if @cycle
         else

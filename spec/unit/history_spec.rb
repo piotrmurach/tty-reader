@@ -40,6 +40,23 @@ RSpec.describe TTY::Reader::History do
     expect(history.index).to eq(2)
   end
 
+  it "iterates over lines" do
+    history = described_class.new
+    history << "line #1"
+    history << "line #2"
+    history << "line #3"
+
+    expect { |block|
+      history.each(&block)
+    }.to yield_successive_args("line #1", "line #2", "line #3")
+  end
+
+  it "returns enumerator when iterating without a block" do
+    history = described_class.new
+
+    expect(history.each).to be_an(Enumerator)
+  end
+
   it "excludes empty lines by default" do
     history = described_class.new
     history << ""
