@@ -89,8 +89,8 @@ module TTY
       @history_exclude = history_exclude
       @history_duplicates = history_duplicates
 
-      @console   = select_console(input)
-      @history   = History.new do |h|
+      @console = select_console(input)
+      @history = History.new do |h|
         h.cycle = history_cycle
         h.duplicates = history_duplicates
         h.exclude = history_exclude
@@ -265,19 +265,19 @@ module TTY
           clear_display(line, screen_width)
         end
 
-        if console.keys[char] == :backspace || BACKSPACE == code
+        if console.keys[char] == :backspace || code == BACKSPACE
           if !line.start?
             line.left
             line.delete
           end
-        elsif console.keys[char] == :delete || DELETE == code
+        elsif console.keys[char] == :delete || code == DELETE
           line.delete
         elsif console.keys[char].to_s =~ /ctrl_/
           # skip
         elsif console.keys[char] == :up
           line.replace(history_previous) if history_previous?
         elsif console.keys[char] == :down
-          line.replace(history_next? ? history_next : buffer) if track_history
+          line.replace(history_next? ? history_next : buffer) if track_history?
         elsif console.keys[char] == :left
           line.left
         elsif console.keys[char] == :right
@@ -295,7 +295,7 @@ module TTY
           buffer = line.text
         end
 
-        if (console.keys[char] == :backspace || BACKSPACE == code) && echo
+        if (console.keys[char] == :backspace || code == BACKSPACE) && echo
           if raw
             output.print("\e[1X") unless line.start?
           else
