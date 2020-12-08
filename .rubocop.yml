@@ -4,6 +4,9 @@ AllCops:
 Layout/LineLength:
   Max: 80
 
+Lint/Debugger:
+  Enabled: false
+
 Lint/AssignmentInCondition:
   Enabled: false
 
