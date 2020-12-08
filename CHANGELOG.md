@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.9.0] - 2020-12-07
+## [v0.9.0] - 2020-12-08
 
 ### Added
 * Add buffer to save input when traversing history and restore it back
