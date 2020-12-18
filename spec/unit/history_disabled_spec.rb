@@ -15,7 +15,7 @@ RSpec.describe TTY::Reader, "#with_history_disabled" do
     input.rewind
     chars = []
     lines = []
-    reader.on(:keypress) { |event| chars << event.value; lines << event.line }
+    reader.on(:keypress) { |event| chars << event.value; lines << event.line.to_s }
     answer = reader.read_line
 
     expect(chars).to eq(%W(a b c \e[A d e f \n))
@@ -28,7 +28,7 @@ RSpec.describe TTY::Reader, "#with_history_disabled" do
     input.rewind
     chars = []
     lines = []
-    reader.on(:keypress) { |event| chars << event.value; lines << event.line }
+    reader.on(:keypress) { |event| chars << event.value; lines << event.line.to_s }
     answer = reader.read_line
 
     expect(chars).to eq(%W(a b c \e[B d e f \n))
