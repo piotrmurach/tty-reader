@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Reader, "#read_line" do
-  let(:input)  { StringIO.new }
-  let(:output) { StringIO.new }
-  let(:env)    { { "TTY_TEST" => true } }
+  let(:input)          { StringIO.new }
+  let(:output)         { StringIO.new }
+  let(:env)            { { "TTY_TEST" => true } }
+  let(:completion)     { true }
+  let(:completion_key) { :tab }
 
-  subject(:reader) { described_class.new(input: input, output: output, env: env) }
+  subject(:reader) { described_class.new(input: input, output: output, env: env, completion: completion, completion_key: completion_key) }
 
   it "masks characters" do
     input << "password\n"
@@ -181,5 +183,35 @@ RSpec.describe TTY::Reader, "#read_line" do
 
       expect(answer).to eq("line2\n")
     end
+  end
+
+  it "partially completes a word when completion is enabled and completion_key is triggered" do
+    input << "a\t"
+    input.rewind
+
+    reader.completion_proc = ->(text) { ["aaaa", "aaab", "aaba"] }
+    answer = reader.read_line(echo: false)
+
+    expect(answer).to eq("aa")
+  end
+
+  it "fully completes a word when completion is enabled and completion_key is triggered" do
+    input << "aab\t"
+    input.rewind
+
+    reader.completion_proc = ->(text) { ["aaaa", "aaab", "aaba"] }
+    answer = reader.read_line(echo: false)
+
+    expect(answer).to eq("aaba\s")
+  end
+
+  it "finalizes a word when completion is enabled and completion_key is triggered" do
+    input << "aaaa\t"
+    input.rewind
+
+    reader.completion_proc = ->(text) { ["aaaa", "aaab", "aaba"] }
+    answer = reader.read_line(echo: false)
+
+    expect(answer).to eq("aaaa\s")
   end
 end

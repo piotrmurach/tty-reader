@@ -1,5 +1,10 @@
 # Change log
 
+## [vX.X.X] - 202X-XX-XX
+
+### Added
+* Add ability to complete words by Thomas Haecker
+
 ## [v0.9.0] - 2020-12-08
 
 ### Added

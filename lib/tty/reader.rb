@@ -29,6 +29,14 @@ module TTY
     # Keys that terminate input
     EXIT_KEYS = [:ctrl_d, :ctrl_z]
 
+    #Provide with a dummy lambda to arrange sugestions for auto completion
+    COMPLETION = ->(text) { [] }
+
+    #Provide with a basic lambda to display completion matches
+    DISPLAY_COMPLETION_MATCHES = ->(completions, line, echo: true) {
+        completions.each { |completion| puts "#{completion}\n"} if echo
+    }
+
     # Raised when the user hits the interrupt key(Control-C)
     #
     # @api public
@@ -52,6 +60,14 @@ module TTY
     attr_reader :track_history
     alias track_history? track_history
 
+    attr_accessor :completion
+
+    attr_reader :completion_key
+
+    attr_accessor :completion_proc
+
+    attr_accessor :display_completion_matches_proc
+
     attr_reader :console
 
     attr_reader :cursor
@@ -74,13 +90,23 @@ module TTY
     #   allow duplicate entires, false by default
     # @param [Proc] history_exclude
     #   exclude lines from history, by default all lines are stored
+    # @param [Boolean] completion
+    #   enable auto completion, false by default
+    # @param [Symbol] completion_key
+    #   defines the key that triggers auto completion
+    # @param [Proc] completion_proc
+    #   arrange suggestions for auto completion
+    # @param [Proc] display_completion_matches_proc
+    #   display candidates for auto completion
     #
     # @api public
     def initialize(input: $stdin, output: $stdout, interrupt: :error,
                    env: ENV, track_history: true, history_cycle: false,
                    history_exclude: History::DEFAULT_EXCLUDE,
                    history_size: History::DEFAULT_SIZE,
-                   history_duplicates: false)
+                   history_duplicates: false,
+                   completion: false, completion_key: :tab, completion_proc: COMPLETION,
+                   display_completion_matches_proc: DISPLAY_COMPLETION_MATCHES )
       @input = input
       @output = output
       @interrupt = interrupt
@@ -90,6 +116,10 @@ module TTY
       @history_exclude = history_exclude
       @history_duplicates = history_duplicates
       @history_size = history_size
+      @completion = completion
+      @completion_key = completion_key
+      @completion_proc = completion_proc
+      @display_completion_matches_proc = display_completion_matches_proc
 
       @console = select_console(input)
       @history = History.new(history_size) do |h|
@@ -229,6 +259,34 @@ module TTY
       codes
     end
 
+    # Complete word according to suggestions
+    #
+    # @api private
+    def complete_word(line, echo: true)
+      text = line.text
+      (text[-1] =~ /\s/) ? word = nil : word = text.split.last
+      suggestions = completion_proc.call(text)
+      if word.nil?
+        completions = suggestions
+        position = 0
+      else
+        completions = suggestions.grep(/^#{Regexp.escape(word)}/)
+        position = word.length
+      end
+      if completions.size > 1
+        char = completions.first[position]
+        if completions.all? { |completion| completion[position] == char }
+          line.insert(char)
+          complete_word(line, echo: echo)
+        else
+          display_completion_matches_proc.call(completions, line, echo: echo)
+        end
+      elsif completions.size == 1
+        line.insert(completions.first[position..-1])
+        line.insert("\s")
+      end
+    end
+
     # Get a single line from STDIN. Each key pressed is echoed
     # back to the shell. The input terminates when enter or
     # return key is pressed.
@@ -288,6 +346,8 @@ module TTY
           line.move_to_start
         elsif console.keys[char] == :end
           line.move_to_end
+        elsif console.keys[char] == completion_key && completion == true
+          complete_word(line, echo: echo)
         else
           if raw && [CARRIAGE_RETURN, NEWLINE].include?(code)
             char = "\n"

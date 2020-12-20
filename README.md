@@ -40,6 +40,7 @@ The `tty-reader` is not compatible with the GNU Readline and doesn't aim to be. 
 * Reading [multiline input](#23-read_multiline)
 * Ability to [register](#24-on) for keystroke events
 * Track input [history](#32-track_history)
+* Ability to [complete words](#36-completion)
 * No global state
 * Works on Linux, OS X, FreeBSD and Windows
 * Supports Ruby versions `>= 2.0.0` & JRuby
@@ -379,6 +380,37 @@ By default, the history buffer can store up to `512` lines. This can be changed 
 
 ```ruby
 reader = TTY::Reader.new(history_size: 2048)
+
+### 3.7. `:completion`
+
+This option controls auto completion of words. By default set to `false`, and can be enabled with:
+
+```ruby
+reader = TTY::Reader.new(completion: true)
+```
+
+### 3.8. `:completion_key`
+
+This option defines the key that triggers auto completion of words. By default set to `:tab`, and can be changed with:
+
+```ruby
+reader = TTY::Reader.new(completion_key: :key)
+```
+
+### 3.9. `:completion_proc`
+
+This option defines a `proc` that is executed each time the completion_key is pressed in order to arrange suggestions for auto completion of words. The `proc` is called with the current line text and is expected to return an array of suggestions. By default it is set to a dummy function that returns an empty array. To changes this:
+
+```ruby
+reader = TTY::Reader.new(completion_proc: ->(text) { ... })
+```
+
+### 3.10. `:display_completion_matches_proc`
+
+This option defines a `proc` that is executed each time the completion_key is pressed and multiple matching suggestions have been found. By default it is set to a simple function that outputs all matches line by line. To change this:
+
+```ruby
+reader = TTY::Reader.new(display_completion_matches: ->(completions, line, echo: true) { ... })
 ```
 
 ## Development
