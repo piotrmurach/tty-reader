@@ -264,15 +264,10 @@ module TTY
     # @api private
     def complete_word(line, echo: true)
       text = line.text
-      (text[-1] =~ /\s/) ? word = nil : word = text.split.last
+      (text.empty? || text[-1] =~ /\s/) ? word = "" : word = text.split.last
       suggestions = completion_proc.call(text)
-      if word.nil?
-        completions = suggestions
-        position = 0
-      else
-        completions = suggestions.grep(/^#{Regexp.escape(word)}/)
-        position = word.length
-      end
+      completions = suggestions.grep(/^#{Regexp.escape(word)}/)
+      position = word.length
       if completions.size > 1
         char = completions.first[position]
         if completions.all? { |completion| completion[position] == char }

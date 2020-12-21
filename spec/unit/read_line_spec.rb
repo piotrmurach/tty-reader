@@ -214,4 +214,24 @@ RSpec.describe TTY::Reader, "#read_line" do
 
     expect(answer).to eq("aaaa\s")
   end
+
+  it "tries to complete a word when completion is enabled and completion_key is triggered and no input is given" do
+    input << "\t"
+    input.rewind
+
+    reader.completion_proc = ->(text) { ["aaaa", "aaab", "aaba"] }
+    answer = reader.read_line(echo: false)
+
+    expect(answer).to eq("aa")
+  end
+
+  it "tries to complete a word completion is enabled and completion_key is triggered and no input is given after the last word in the line" do
+    input << "word \t"
+    input.rewind
+
+    reader.completion_proc = ->(text) { ["aaaa", "aaab", "aaba"] }
+    answer = reader.read_line(echo: false)
+
+    expect(answer).to eq("word aa")
+  end
 end
