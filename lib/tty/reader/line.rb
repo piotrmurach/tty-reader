@@ -7,6 +7,9 @@ module TTY
     class Line
       ANSI_MATCHER = /(\[)?\033(\[)?[;?\d]*[\dA-Za-z](\])?/
 
+      # The word break characters list used by shell
+      DEFAULT_WORD_BREAK_CHARACTERS = " \t\n\"\\'`@$><=|&{("
+
       # Strip ANSI characters from the text
       #
       # @param [String] text
@@ -34,12 +37,21 @@ module TTY
       # @api public
       attr_reader :prompt
 
+      # The word separator pattern for splitting the text
+      #
+      # @return [Regexp]
+      #
+      # @api public
+      attr_reader :separator
+
       # Create a Line instance
       #
       # @api private
-      def initialize(text = "", prompt: "")
-        @prompt = prompt.dup
+      def initialize(text = "", prompt: "", separator: nil)
         @text   = text.dup
+        @prompt = prompt.dup
+        break_chars = DEFAULT_WORD_BREAK_CHARACTERS.chars
+        @separator = separator || Regexp.union(break_chars)
         @cursor = [0, @text.length].max
         @mode   = :edit
 
@@ -178,6 +190,55 @@ module TTY
       # @api public
       def [](i)
         @text[i]
+      end
+
+      # Find a word under the cursor based on the word separator
+      #
+      # @param [Boolean] before
+      #   whether to start searching before or after a break character
+      #
+      # @return [String]
+      #
+      # @api public
+      def word(before: true)
+        @text[range(before: before)]
+      end
+
+      # Find a range of characters under the cursor based on the word separator
+      #
+      # @param [Integer] from
+      #   the start index
+      #
+      # @param [Symbol] before
+      #   whether to start search before or after break character
+      #
+      # @return [Range]
+      #
+      # @api public
+      def range(from: @cursor, before: true)
+        # move back or forward by one character when at a word boundary
+        if word_boundary?
+          from = before ? from - 1 : from + 1
+        end
+
+        # find start position
+        start_pos = @text.rindex(separator, from) || 0
+        start_pos += 1 unless start_pos.zero?
+
+        # find end position
+        end_pos = @text.index(separator, start_pos) || text_size
+        end_pos -= 1 unless @text.empty?
+
+        start_pos..end_pos
+      end
+
+      # Check if cursor is at a word boundary
+      #
+      # @return [Boolean]
+      #
+      # @api private
+      def word_boundary?
+        @text[@cursor] =~ separator
       end
 
       # Replace current line with new text

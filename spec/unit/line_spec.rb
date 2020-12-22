@@ -155,4 +155,92 @@ RSpec.describe TTY::Reader::Line do
     expect(line.cursor).to eq(9)
     expect(line.editing?).to eq(true)
   end
+
+  context "#word" do
+    it "returns empty string when no text content" do
+      line = described_class.new("")
+
+      expect(line.word).to eq("")
+      expect(line.range).to eq(0..0)
+    end
+
+    it "matches the text content" do
+      line = described_class.new("foo")
+
+      expect(line.word).to eq("foo")
+      expect(line.range).to eq(0..2)
+    end
+
+    it "finds a word at the cursor start position" do
+      line = described_class.new("foo bar baz")
+
+      line.move_to_start
+      expect(line.word).to eq("foo")
+      expect(line.range).to eq(0..2)
+    end
+
+    it "finds a word at the cursor end position" do
+      line = described_class.new("foo bar baz")
+
+      expect(line.word).to eq("baz")
+      expect(line.range).to eq(8..10)
+    end
+
+    it "finds a word at the cursor position in the middle of content" do
+      line = described_class.new("foo bar baz")
+
+      line.move_to_start
+      line.right(4)
+      expect(line.word).to eq("bar")
+      expect(line.range).to eq(4..6)
+    end
+
+    it "finds a word with a cursor at the last word" do
+      line = described_class.new("foo bar baz")
+
+      line.move_to_start
+      line.right(8)
+      expect(line.word).to eq("baz")
+      expect(line.range).to eq(8..10)
+    end
+
+    it "finds a word before a break character" do
+      line = described_class.new("foo bar")
+
+      line.move_to_start
+      line.right(3)
+      expect(line.word).to eq("foo")
+      expect(line.range).to eq(0..2)
+    end
+
+    it "finds a word after a break character" do
+      line = described_class.new("foo bar")
+
+      line.move_to_start
+      line.right(3)
+      expect(line.word(before: false)).to eq("bar")
+      expect(line.range).to eq(0..2)
+    end
+
+    it "finds a custom break character" do
+      line = described_class.new("aa\tbb\ncc\"dd\\ee'ff`gg@" \
+                                 "hh$ii>jj<kk=ll|mm&nn{oo(pp")
+
+      line.move_to_start
+      expect(line.word).to eq("aa")
+      %w[bb cc dd ee ff gg hh ii jj kk ll mm nn oo pp].each do |word|
+        line.right(3)
+        expect(line.word).to eq(word)
+      end
+    end
+
+    it "uses a custom break character" do
+      line = described_class.new("foo_bar", separator: /_/)
+
+      line.move_to_start
+      line.right(3)
+      expect(line.word).to eq("foo")
+      expect(line.range).to eq(0..2)
+    end
+  end
 end
