@@ -76,6 +76,7 @@ Or install it yourself as:
   * [3.3 :history_cycle](#33-history_cycle)
   * [3.4 :history_duplicates](#34-history_duplicates)
   * [3.5 :history_exclude](#35-history_exclude)
+  * [3.6 :history_size](#36-history_size)
 
 ## Usage
 
@@ -370,6 +371,14 @@ This option allows you to exclude lines from being stored in history. It accepts
 
 ```ruby
 reader = TTY::Reader.new(history_exclude: ->(line) { ... })
+```
+
+### 3.6. `:history_size`
+
+By default, the history buffer can store up to `512` lines. This can be changed with the `:history_size` configuration:
+
+```ruby
+reader = TTY::Reader.new(history_size: 2048)
 ```
 
 ## Development

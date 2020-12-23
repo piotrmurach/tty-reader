@@ -79,6 +79,7 @@ module TTY
     def initialize(input: $stdin, output: $stdout, interrupt: :error,
                    env: ENV, track_history: true, history_cycle: false,
                    history_exclude: History::DEFAULT_EXCLUDE,
+                   history_size: History::DEFAULT_SIZE,
                    history_duplicates: false)
       @input = input
       @output = output
@@ -88,9 +89,10 @@ module TTY
       @history_cycle = history_cycle
       @history_exclude = history_exclude
       @history_duplicates = history_duplicates
+      @history_size = history_size
 
       @console = select_console(input)
-      @history = History.new do |h|
+      @history = History.new(history_size) do |h|
         h.cycle = history_cycle
         h.duplicates = history_duplicates
         h.exclude = history_exclude

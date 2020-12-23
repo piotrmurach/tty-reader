@@ -126,43 +126,60 @@ RSpec.describe TTY::Reader, "#read_line" do
     ].join)
   end
 
-  it "restores empty line when history has no more lines" do
-    input << "ab\ncd\n\e[A\e[A\e[B\e[B\n"
-    input.rewind
-    chars = []
-    lines = []
-    answer = nil
+  context "history navigation" do
+    it "restores empty line when history has no more lines" do
+      input << "ab\ncd\n\e[A\e[A\e[B\e[B\n"
+      input.rewind
+      chars = []
+      lines = []
+      answer = nil
 
-    reader.on(:keypress) do |event|
-      chars << event.value
-      lines << event.line
+      reader.on(:keypress) do |event|
+        chars << event.value
+        lines << event.line
+      end
+
+      3.times do
+        answer = reader.read_line
+      end
+
+      expect(chars).to eq(%W(a b \n c d \n \e[A \e[A \e[B \e[B \n))
+      expect(lines).to eq(%W(a ab ab\n c cd cd\n cd ab cd #{''} \n))
+      expect(answer).to eq("\n")
     end
 
-    3.times do
+    it "buffers non-empty input and restores it back when history has no more lines" do
+      input << "ab\ncd\e[A\e[B\n"
+      input.rewind
+      chars = []
+      lines = []
+
+      reader.on(:keypress) do |event|
+        chars << event.value
+        lines << event.line
+      end
+
+      reader.read_line
       answer = reader.read_line
+
+      expect(chars).to eq(%W(a b \n c d \e[A \e[B \n))
+      expect(lines).to eq(%W(a ab ab\n c cd ab cd cd\n))
+      expect(answer).to eq("cd\n")
     end
 
-    expect(chars).to eq(%W(a b \n c d \n \e[A \e[A \e[B \e[B \n))
-    expect(lines).to eq(%W(a ab ab\n c cd cd\n cd ab cd #{''} \n))
-    expect(answer).to eq("\n")
-  end
+    it "limits history size" do
+      reader = described_class.new(input: input, output: output, env: env,
+                                   history_size: 2)
+      input << "line1\nline2\nline3\n"
+      input << "\e[A" << "\e[A" << "\e[A" << "\n"
+      input.rewind
+      answer = nil
 
-  it "buffers non-empty input and restores it back when history has no more lines" do
-    input << "ab\ncd\e[A\e[B\n"
-    input.rewind
-    chars = []
-    lines = []
+      4.times do
+        answer = reader.read_line
+      end
 
-    reader.on(:keypress) do |event|
-      chars << event.value
-      lines << event.line
+      expect(answer).to eq("line2\n")
     end
-
-    reader.read_line
-    answer = reader.read_line
-
-    expect(chars).to eq(%W(a b \n c d \e[A \e[B \n))
-    expect(lines).to eq(%W(a ab ab\n c cd ab cd cd\n))
-    expect(answer).to eq("cd\n")
   end
 end
