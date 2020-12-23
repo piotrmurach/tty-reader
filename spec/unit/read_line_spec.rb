@@ -85,6 +85,15 @@ RSpec.describe TTY::Reader, "#read_line" do
     expect(answer).to eq("acc\n")
   end
 
+  it "finishes input with enter pressed inside the line" do
+    input << "aaa" << "\e[D" << "\e[D" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+
+    expect(answer).to eq("aaa\n")
+  end
+
   it "reads multibyte line" do
     input << "한글"
     input.rewind

@@ -287,7 +287,7 @@ module TTY
         elsif console.keys[char] == :end
           line.move_to_end
         else
-          if raw && code == CARRIAGE_RETURN
+          if raw && [CARRIAGE_RETURN, NEWLINE].include?(code)
             char = "\n"
             line.move_to_end
           end
