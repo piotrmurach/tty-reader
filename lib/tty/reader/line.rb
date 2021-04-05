@@ -232,6 +232,20 @@ module TTY
         start_pos..end_pos
       end
 
+      # Find a subtext under the cursor
+      #
+      # @param [Boolean] before
+      #   whether to return the subtext before or after the cursor position
+      #
+      # @return [String]
+      #
+      # @api public
+      def subtext(before: true)
+
+        before ? @text[0..@cursor] : @text[@cursor..-1]
+
+      end
+
       # Check if cursor is at a word boundary
       #
       # @return [Boolean]

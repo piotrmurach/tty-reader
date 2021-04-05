@@ -195,7 +195,7 @@ RSpec.describe TTY::Reader, "#read_line" do
     expect(answer).to eq("aa")
   end
 
-  it "fully completes a word when completion is enabled and completion_key is triggered" do
+  it "fully completes a word at the end of the line text when completion is enabled and completion_key is triggered" do
     input << "aab\t"
     input.rewind
 
@@ -203,6 +203,17 @@ RSpec.describe TTY::Reader, "#read_line" do
     answer = reader.read_line(echo: false)
 
     expect(answer).to eq("aaba\s")
+  end
+
+  it "fully completes a word within the line text when completion is enabled and completion_key is triggered" do
+    input << "foo aab bar"
+    input << "\e[D" << "\e[D" << "\e[D" << "\e[D" << "\t"
+    input.rewind
+
+    reader.completion_proc = ->(text) { ["aaaa", "aaab", "aaba"] }
+    answer = reader.read_line(echo: false)
+
+    expect(answer).to eq("foo aaba bar")
   end
 
   it "finalizes a word when completion is enabled and completion_key is triggered" do

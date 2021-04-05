@@ -222,6 +222,15 @@ RSpec.describe TTY::Reader::Line do
       expect(line.range).to eq(0..2)
     end
 
+    it "finds a subtext before and after the cursor position" do
+      line = described_class.new("foo bar baz")
+
+      line.move_to_start
+      line.right(5)
+      expect(line.subtext(before: true)).to eq("foo ba")
+      expect(line.subtext(before: false)).to eq("ar baz")
+    end
+
     it "finds a custom break character" do
       line = described_class.new("aa\tbb\ncc\"dd\\ee'ff`gg@" \
                                  "hh$ii>jj<kk=ll|mm&nn{oo(pp")

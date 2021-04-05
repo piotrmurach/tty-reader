@@ -263,9 +263,9 @@ module TTY
     #
     # @api private
     def complete_word(line, echo: true)
-      text = line.text
-      (text.empty? || text[-1] =~ /\s/) ? word = "" : word = text.split.last
-      suggestions = completion_proc.call(text)
+      word = line.word
+      subtext = line.subtext
+      suggestions = completion_proc.call(subtext)
       completions = suggestions.grep(/^#{Regexp.escape(word)}/)
       position = word.length
       if completions.size > 1
@@ -278,7 +278,7 @@ module TTY
         end
       elsif completions.size == 1
         line.insert(completions.first[position..-1])
-        line.insert("\s")
+        line.insert("\s") unless line.text.length > line.cursor
       end
     end
 
