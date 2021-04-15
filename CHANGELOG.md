@@ -1,5 +1,14 @@
 # Change log
 
+## [v0.10.0] - unreleased
+
+### Added
+* Add to line the ability to find a range of characters or a word under the cursor.
+* Add :history_size keyword to allow configuration of maximum history size
+
+### Changed
+* Change to finish input with a newline when enter is pressed inside the input line
+
 ## [v0.9.0] - 2020-12-08
 
 ### Added
@@ -88,6 +97,7 @@
 
 * Initial implementation and release
 
+[v0.10.0]: https://github.com/piotrmurach/tty-reader/compare/v0.9.0...v0.10.0
 [v0.9.0]: https://github.com/piotrmurach/tty-reader/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://github.com/piotrmurach/tty-reader/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/piotrmurach/tty-reader/compare/v0.6.0...v0.7.0
