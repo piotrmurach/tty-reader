@@ -257,8 +257,9 @@ module TTY
       while (codes = get_codes(echo: echo, raw: raw, nonblock: nonblock)) &&
             (code = codes[0])
         char = codes.pack("U*")
+        key_name = console.keys[char]
 
-        if EXIT_KEYS.include?(console.keys[char])
+        if EXIT_KEYS.include?(key_name)
           trigger_key_event(char, line: line.to_s)
           break
         end
@@ -267,26 +268,26 @@ module TTY
           clear_display(line, screen_width)
         end
 
-        if console.keys[char] == :backspace || code == BACKSPACE
+        if key_name == :backspace || code == BACKSPACE
           if !line.start?
             line.left
             line.delete
           end
-        elsif console.keys[char] == :delete || code == DELETE
+        elsif key_name == :delete || code == DELETE
           line.delete
-        elsif console.keys[char].to_s =~ /ctrl_/
+        elsif key_name.to_s =~ /ctrl_/
           # skip
-        elsif console.keys[char] == :up
+        elsif key_name == :up
           line.replace(history_previous) if history_previous?
-        elsif console.keys[char] == :down
+        elsif key_name == :down
           line.replace(history_next? ? history_next : buffer) if track_history?
-        elsif console.keys[char] == :left
+        elsif key_name == :left
           line.left
-        elsif console.keys[char] == :right
+        elsif key_name == :right
           line.right
-        elsif console.keys[char] == :home
+        elsif key_name == :home
           line.move_to_start
-        elsif console.keys[char] == :end
+        elsif key_name == :end
           line.move_to_end
         else
           if raw && [CARRIAGE_RETURN, NEWLINE].include?(code)
@@ -297,7 +298,7 @@ module TTY
           buffer = line.text
         end
 
-        if (console.keys[char] == :backspace || code == BACKSPACE) && echo
+        if (key_name == :backspace || code == BACKSPACE) && echo
           if raw
             output.print("\e[1X") unless line.start?
           else
