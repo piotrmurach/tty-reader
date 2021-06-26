@@ -103,6 +103,18 @@ module TTY
       end
       alias << push
 
+      # Replace the current line with a new one
+      #
+      # @param [String] line
+      #   the new line to replace with
+      #
+      # @api public
+      def replace(line)
+        return if @index.to_i >= size
+
+        @history[index] = line.dup
+      end
+
       # Move the pointer to the next line in the history
       #
       # @api public

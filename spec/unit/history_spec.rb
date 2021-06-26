@@ -187,6 +187,30 @@ RSpec.describe TTY::Reader::History do
     expect(history.get).to eq("line #2")
   end
 
+  it "skips replacing line when history is empty" do
+    history = described_class.new
+
+    history.replace("line #0")
+
+    expect(history.get).to eq(nil)
+  end
+
+  it "replaces current line with a new one" do
+    history = described_class.new
+
+    history << "line #1"
+    history << "line #2"
+    history << "line #3"
+
+    expect(history.index).to eq(2)
+    history.previous
+    expect(history.get).to eq("line #2")
+
+    history.replace("line updated")
+
+    expect(history.get).to eq("line updated")
+  end
+
   it "clears all lines" do
     history = described_class.new(3)
 

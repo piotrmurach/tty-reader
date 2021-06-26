@@ -5,6 +5,7 @@
 ### Added
 * Add to line the ability to find a range of characters or a word under the cursor.
 * Add :history_size keyword to allow configuration of maximum history size
+* Add the ability to replace a current line in the history buffer
 
 ### Changed
 * Change to finish input with a newline when enter is pressed inside the input line
