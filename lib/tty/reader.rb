@@ -250,6 +250,7 @@ module TTY
     def read_line(prompt = "", value: "", echo: true, raw: true, nonblock: false)
       line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
+      history_in_use = false
       buffer = ""
 
       output.print(line)
@@ -278,9 +279,17 @@ module TTY
         elsif key_name.to_s =~ /ctrl_/
           # skip
         elsif key_name == :up
-          line.replace(history_previous) if history_previous?
+          if history_previous?
+            line.replace(history_previous(skip: !history_in_use))
+            history_in_use = true
+          end
         elsif key_name == :down
-          line.replace(history_next? ? history_next : buffer) if track_history?
+          if history_next?
+            line.replace(history_next)
+          elsif history_in_use
+            line.replace(buffer)
+            history_in_use = false
+          end
         elsif key_name == :left
           line.left
         elsif key_name == :right
@@ -433,30 +442,60 @@ module TTY
     end
     alias keyctrl_z keyctrl_d
 
+    # Add a line to history
+    #
+    # @param [String] line
+    #
+    # @api private
     def add_to_history(line)
       @history.push(line)
     end
 
+    # Check if history has next line
+    #
+    # @param [Boolean]
+    #
+    # @api private
     def history_next?
       @history.next?
     end
 
+    # Move history to the next line
+    #
+    # @return [String]
+    #   the next line
+    #
+    # @api private
     def history_next
       @history.next
       @history.get
     end
 
+    # Check if history has previous line
+    #
+    # @return [Boolean]
+    #
+    # @api private
     def history_previous?
       @history.previous?
     end
 
-    def history_previous
-      line = @history.get
-      @history.previous
-      line
+    # Move history to the previous line
+    #
+    # @param [Boolean] skip
+    #   whether or not to move history index
+    #
+    # @return [String]
+    #   the previous line
+    #
+    # @api private
+    def history_previous(skip: false)
+      @history.previous unless skip
+      @history.get
     end
 
     # Inspect class name and public attributes
+    #
     # @return [String]
     #
     # @api public

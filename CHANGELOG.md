@@ -10,6 +10,9 @@
 ### Changed
 * Change to finish input with a newline when enter is pressed inside the input line
 
+### Fixed
+* Fix navigation to the previous history line to display the latest line
+
 ## [v0.9.0] - 2020-12-08
 
 ### Added

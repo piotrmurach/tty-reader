@@ -4,6 +4,8 @@ RSpec.describe TTY::Reader, "#read_line" do
   let(:input)  { StringIO.new }
   let(:output) { StringIO.new }
   let(:env)    { { "TTY_TEST" => true } }
+  let(:up)     { "\e[A" }
+  let(:down)   { "\e[B" }
 
   subject(:reader) { described_class.new(input: input, output: output, env: env) }
 
@@ -148,8 +150,8 @@ RSpec.describe TTY::Reader, "#read_line" do
       expect(answer).to eq("\n")
     end
 
-    it "buffers non-empty input and restores it back when history has no more lines" do
-      input << "ab\ncd\e[A\e[B\n"
+    it "restores non-empty input line when history has no more lines" do
+      input << "ab\n" << "cd" << up << down << "\n"
       input.rewind
       chars = []
       lines = []
@@ -162,7 +164,7 @@ RSpec.describe TTY::Reader, "#read_line" do
       reader.read_line
       answer = reader.read_line
 
-      expect(chars).to eq(%W(a b \n c d \e[A \e[B \n))
+      expect(chars).to eq(%W(a b \n c d #{up} #{down} \n))
       expect(lines).to eq(%W(a ab ab\n c cd ab cd cd\n))
       expect(answer).to eq("cd\n")
     end
@@ -171,7 +173,7 @@ RSpec.describe TTY::Reader, "#read_line" do
       reader = described_class.new(input: input, output: output, env: env,
                                    history_size: 2)
       input << "line1\nline2\nline3\n"
-      input << "\e[A" << "\e[A" << "\e[A" << "\n"
+      input << up << up << up << "\n"
       input.rewind
       answer = nil
 
@@ -180,6 +182,32 @@ RSpec.describe TTY::Reader, "#read_line" do
       end
 
       expect(answer).to eq("line2\n")
+    end
+
+    it "retrieves previous history line with up arrow key" do
+      input << "aa\n" << "bb\n" << "cc\n"
+      input << up << up << "\n"
+      input.rewind
+      answer = nil
+
+      4.times do
+        answer = reader.read_line
+      end
+
+      expect(answer).to eq("bb\n")
+    end
+
+    it "retrieves next history line with down arrow key" do
+      input << "aa\n" << "bb\n" << "cc\n"
+      input << up << up << down << down << up << "\n"
+      input.rewind
+      answer = nil
+
+      4.times do
+        answer = reader.read_line
+      end
+
+      expect(answer).to eq("cc\n")
     end
   end
 end
