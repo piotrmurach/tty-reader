@@ -184,6 +184,25 @@ RSpec.describe TTY::Reader, "#read_line" do
       expect(answer).to eq("line2\n")
     end
 
+    it "allows duplicates in history" do
+      reader = described_class.new(input: input, output: output, env: env,
+                                   history_duplicates: true)
+      input << "aa\nbb\naa\n"
+      input << up << up << up << "\n"
+      input.rewind
+      answer = nil
+      lines = []
+
+      reader.on(:keypress) { |event| lines << event.line }
+
+      4.times do
+        answer = reader.read_line
+      end
+
+      expect(answer).to eq("aa\n")
+      expect(lines).to eq(%W(a aa aa\n b bb bb\n a aa aa\n aa bb aa aa\n))
+    end
+
     it "retrieves previous history line with up arrow key" do
       input << "aa\n" << "bb\n" << "cc\n"
       input << up << up << "\n"

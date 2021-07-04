@@ -359,10 +359,10 @@ reader = TTY::Reader.new(history_cycle: true)
 
 ### 3.4. `:history_duplicates`
 
-This option controls whether duplicate lines are stored in history. By default set to `true`. You can change this:
+This option controls whether duplicate lines are stored in history. By default set to `false`. You can change this:
 
 ```ruby
-reader = TTY::Reader.new(history_duplicates: false)
+reader = TTY::Reader.new(history_duplicates: true)
 ```
 
 ### 3.5. `:history_exclude`
