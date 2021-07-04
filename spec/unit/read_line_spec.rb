@@ -209,5 +209,67 @@ RSpec.describe TTY::Reader, "#read_line" do
 
       expect(answer).to eq("cc\n")
     end
+
+    it "edits line in history and uses it without affecting history" do
+      input << "aa\n" << "bb\n"
+      input << up << up << "\bx" << "\n"
+      input << up << up << up << "\n"
+      input.rewind
+      answer = nil
+      lines = []
+
+      reader.on(:keypress) { |event| lines << event.line }
+
+      3.times do
+        answer = reader.read_line
+      end
+
+      expect(answer).to eq("ax\n")
+
+      answer = reader.read_line
+
+      expect(answer).to eq("aa\n")
+      expect(lines).to eq(%W(a aa aa\n b bb bb\n bb aa a ax ax\n ax bb aa aa\n))
+    end
+
+    it "edits line in history and navigates away and back to it to use it" do
+      input << "aa\n" << "bb\n"
+      input << up << "\bx" << up << down << "\n"
+      input.rewind
+      answer = nil
+      lines = []
+
+      reader.on(:keypress) { |event| lines << event.line }
+
+      3.times do
+        answer = reader.read_line
+      end
+
+      expect(answer).to eq("bx\n")
+      expect(lines).to eq(%W(a aa aa\n b bb bb\n bb b bx aa bx bx\n))
+    end
+
+    it "edits line in history but doesn't use it and enters a new line of text" do
+      input << "aa\n" << "bb\n"
+      input << up << up << "\bx" << down << down << "cc\n"
+      input << up << up << up << "\n"
+      input.rewind
+      answer = nil
+      lines = []
+
+      reader.on(:keypress) { |event| lines << event.line }
+
+      3.times do
+        answer = reader.read_line
+      end
+
+      expect(answer).to eq("cc\n")
+
+      answer = reader.read_line
+
+      expect(answer).to eq("ax\n")
+      expect(lines).to eq(%W(a aa aa\n b bb bb\n bb aa a ax bb #{""} c cc cc\n
+                             cc bb ax ax\n))
+    end
   end
 end

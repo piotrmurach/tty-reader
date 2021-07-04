@@ -279,11 +279,13 @@ module TTY
         elsif key_name.to_s =~ /ctrl_/
           # skip
         elsif key_name == :up
+          @history.replace(line.text) if history_in_use
           if history_previous?
             line.replace(history_previous(skip: !history_in_use))
             history_in_use = true
           end
         elsif key_name == :down
+          @history.replace(line.text) if history_in_use
           if history_next?
             line.replace(history_next)
           elsif history_in_use
@@ -304,7 +306,7 @@ module TTY
             line.move_to_end
           end
           line.insert(char)
-          buffer = line.text
+          buffer = line.text unless history_in_use
         end
 
         if (key_name == :backspace || code == BACKSPACE) && echo
