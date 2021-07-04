@@ -27,7 +27,7 @@ module TTY
     DELETE          = 127
 
     # Keys that terminate input
-    EXIT_KEYS = [:ctrl_d, :ctrl_z]
+    EXIT_KEYS = %i[ctrl_d ctrl_z].freeze
 
     # Raised when the user hits the interrupt key(Control-C)
     #
@@ -239,6 +239,8 @@ module TTY
     #   the value to pre-populate line with
     # @param [Boolean] echo
     #   whether to echo chars back or not, defaults to false
+    # @param [Array<Symbol>] exit_keys
+    #   the custom keys to exit line editing
     # @option [Boolean] raw
     #   whenther raw mode is enabled, defaults to true
     # @option [Boolean] nonblock
@@ -247,7 +249,8 @@ module TTY
     # @return [String]
     #
     # @api public
-    def read_line(prompt = "", value: "", echo: true, raw: true, nonblock: false)
+    def read_line(prompt = "", value: "", echo: true, raw: true,
+                  nonblock: false, exit_keys: nil)
       line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
       history_in_use = false
@@ -260,7 +263,7 @@ module TTY
         char = codes.pack("U*")
         key_name = console.keys[char]
 
-        if EXIT_KEYS.include?(key_name)
+        if exit_keys && exit_keys.include?(key_name)
           trigger_key_event(char, line: line.to_s)
           break
         end
@@ -394,6 +397,8 @@ module TTY
     #   the value to pre-populate line with
     # @param [Boolean] echo
     #   whether to echo chars back or not, defaults to false
+    # @param [Array<Symbol>] exit_keys
+    #   the custom keys to exit line editing
     # @option [Boolean] raw
     #   whenther raw mode is enabled, defaults to true
     # @option [Boolean] nonblock
@@ -405,14 +410,14 @@ module TTY
     #
     # @api public
     def read_multiline(prompt = "", value: "", echo: true, raw: true,
-                       nonblock: false)
+                       nonblock: false, exit_keys: EXIT_KEYS)
       @stop = false
       lines = []
       empty_str = ""
 
       loop do
         line = read_line(prompt, value: value, echo: echo, raw: raw,
-                                 nonblock: nonblock)
+                                 nonblock: nonblock, exit_keys: exit_keys)
         value = empty_str unless value.empty? # reset
         break if !line || line == empty_str
         next  if line !~ /\S/ && !@stop

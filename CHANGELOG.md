@@ -7,6 +7,7 @@
 * Add :history_size keyword to allow configuration of maximum history size
 * Add the ability to replace a current line in the history buffer
 * Add support for preserving edits to lines stored in history
+* Add :exit_keys parameter for specifying keys to exit input without using the enter key
 
 ### Changed
 * Change to finish input with a newline when enter is pressed inside the input line

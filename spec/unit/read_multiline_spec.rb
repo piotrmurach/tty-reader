@@ -107,4 +107,17 @@ RSpec.describe TTY::Reader, "#read_multiline" do
       "> "
     ].join)
   end
+
+  it "exits input with a custom Ctrl+O key" do
+    input << "a" << "\C-o"
+    input.rewind
+    chars = []
+
+    reader.on(:keypress) { |event| chars << event.value }
+
+    answer = reader.read_line(exit_keys: %i[ctrl_o])
+
+    expect(answer).to eq("a")
+    expect(chars).to eq(%W(a \C-o))
+  end
 end
