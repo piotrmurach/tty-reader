@@ -29,6 +29,9 @@ module TTY
     # Keys that terminate input
     EXIT_KEYS = %i[ctrl_d ctrl_z].freeze
 
+    # Pattern to check if line ends with a line break character
+    END_WITH_LINE_BREAK = /(\r|\n)$/.freeze
+
     # Raised when the user hits the interrupt key(Control-C)
     #
     # @api public
@@ -97,10 +100,7 @@ module TTY
         h.duplicates = history_duplicates
         h.exclude = history_exclude
       end
-      @stop = false # gathering input
       @cursor = TTY::Cursor
-
-      subscribe(self)
     end
 
     alias old_subcribe subscribe
@@ -411,23 +411,28 @@ module TTY
     # @api public
     def read_multiline(prompt = "", value: "", echo: true, raw: true,
                        nonblock: false, exit_keys: EXIT_KEYS)
-      @stop = false
       lines = []
-      empty_str = ""
+      stop = false
+      clear_value = !value.to_s.empty?
 
       loop do
         line = read_line(prompt, value: value, echo: echo, raw: raw,
-                                 nonblock: nonblock, exit_keys: exit_keys)
-        value = empty_str unless value.empty? # reset
-        break if !line || line == empty_str
-        next  if line !~ /\S/ && !@stop
+                                 nonblock: nonblock, exit_keys: exit_keys).to_s
+        if clear_value
+          clear_value = false
+          value = ""
+        end
+        break if line.empty?
+
+        stop = line.match(END_WITH_LINE_BREAK).nil?
+        next if line !~ /\S/ && !stop
 
         if block_given?
-          yield(line) unless line.to_s.empty?
+          yield(line)
         else
-          lines << line unless line.to_s.empty?
+          lines << line
         end
-        break if @stop
+        break if stop
       end
 
       lines
@@ -440,14 +445,6 @@ module TTY
     def trigger(event, *args)
       publish(event, *args)
     end
-
-    # Capture Ctrl+d and Ctrl+z key events
-    #
-    # @api private
-    def keyctrl_d(*)
-      @stop = true
-    end
-    alias keyctrl_z keyctrl_d
 
     # Add a line to history
     #

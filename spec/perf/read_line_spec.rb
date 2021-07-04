@@ -7,7 +7,7 @@ RSpec.describe TTY::Reader, "#read_line" do
 
   let(:output) { StringIO.new }
 
-  it "reads line at most 1900x slower than gets method" do
+  it "reads line at most 1700x slower than gets method" do
     input = StringIO.new("abc\n")
     reader = described_class.new(input: input, output: output)
 
@@ -17,15 +17,15 @@ RSpec.describe TTY::Reader, "#read_line" do
     }.to perform_slower_than {
       input.rewind
       input.gets
-    }.at_most(1900).times
+    }.at_most(1700).times
   end
 
-  it "reads line allocating no more than 492 objects" do
+  it "reads line allocating no more than 420 objects" do
     input = StringIO.new("abc\n")
     reader = described_class.new(input: input, output: output)
 
     expect {
       reader.read_line
-    }.to perform_allocation(492).objects
+    }.to perform_allocation(420).objects
   end
 end
