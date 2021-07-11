@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Reader::Line do
+  it "is empty by default" do
+    line = described_class.new
+
+    expect(line.prompt).to eq("")
+    expect(line.text).to eq("")
+    expect(line.size).to eq(0)
+    expect(line.to_s).to eq("")
+  end
+
   it "provides access to the prompt" do
     line = described_class.new("aaa", prompt: ">> ")
     expect(line.prompt).to eq(">> ")

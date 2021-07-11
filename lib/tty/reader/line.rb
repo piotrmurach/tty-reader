@@ -37,6 +37,10 @@ module TTY
       # @api public
       attr_reader :prompt
 
+      # The prompt size
+      # @api public
+      attr_reader :prompt_size
+
       # The word separator pattern for splitting the text
       #
       # @return [Regexp]
@@ -50,12 +54,28 @@ module TTY
       def initialize(text = "", prompt: "", separator: nil)
         @text   = text.dup
         @prompt = prompt.dup
+        @prompt_size = prompt_display_width
         break_chars = DEFAULT_WORD_BREAK_CHARACTERS.chars
         @separator = separator || Regexp.union(break_chars)
         @cursor = [0, @text.length].max
         @mode   = :edit
 
         yield self if block_given?
+      end
+
+      # Prompt display width
+      #
+      # @return [Integer]
+      #   the prompt size
+      #
+      # @api public
+      def prompt_display_width
+        lines = self.class.sanitize(@prompt).split(/\r?\n/)
+        return 0 if lines.empty?
+
+        # return the length of each line + screen width for every line
+        # past the first which accounts for multi-line prompts
+        lines.join.length + ((lines.length - 1) * TTY::Screen.width)
       end
 
       # Check if line is in edit mode
@@ -292,16 +312,6 @@ module TTY
         "#{@prompt}#{@text}"
       end
       alias inspect to_s
-
-      # Prompt size
-      #
-      # @api public
-      def prompt_size
-        p = self.class.sanitize(@prompt).split(/\r?\n/)
-        # return the length of each line + screen width for every line past the first
-        # which accounts for multi-line prompts
-        p.join.length + ((p.length - 1) * TTY::Screen.width )
-      end
 
       # Text size
       #

@@ -12,6 +12,7 @@
 ### Changed
 * Change to finish input with a newline when enter is pressed inside the input line
 * Change Reader to stop listening to key events
+* Change Line to calculate prompt size once to improve performance
 
 ### Fixed
 * Fix navigation to the previous history line to display the latest line
