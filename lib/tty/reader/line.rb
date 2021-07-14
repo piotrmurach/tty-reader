@@ -212,7 +212,7 @@ module TTY
         @text[i]
       end
 
-      # Find a word under the cursor based on the word separator
+      # Find a word under the cursor based on a separator
       #
       # @param [Boolean] before
       #   whether to start searching before or after a break character
@@ -221,35 +221,56 @@ module TTY
       #
       # @api public
       def word(before: true)
-        @text[range(before: before)]
+        start_pos = word_start_pos(before: before)
+        @text[start_pos..word_end_pos(from: start_pos)]
       end
 
-      # Find a range of characters under the cursor based on the word separator
+      # Find a word up to a cursor position
+      #
+      # @param [Boolean] before
+      #   whether to start searching before or after a break character
+      #
+      # @return [String]
+      #
+      # @api public
+      def word_to_complete(before: true)
+        @text[word_start_pos(before: before)...@cursor]
+      end
+
+      # Find word start position
       #
       # @param [Integer] from
-      #   the start index
+      #   the index to start searching from, defaults to cursor position
       #
       # @param [Symbol] before
       #   whether to start search before or after break character
       #
-      # @return [Range]
+      # @return [Integer]
       #
       # @api public
-      def range(from: @cursor, before: true)
+      def word_start_pos(from: @cursor, before: true)
         # move back or forward by one character when at a word boundary
         if word_boundary?
           from = before ? from - 1 : from + 1
         end
 
-        # find start position
         start_pos = @text.rindex(separator, from) || 0
         start_pos += 1 unless start_pos.zero?
+        start_pos
+      end
 
-        # find end position
-        end_pos = @text.index(separator, start_pos) || text_size
+      # Find word end position
+      #
+      # @param [Integer] from
+      #   the index to start searching from, defaults to cursor position
+      #
+      # @return [Integer]
+      #
+      # @api public
+      def word_end_pos(from: @cursor)
+        end_pos = @text.index(separator, from) || text_size
         end_pos -= 1 unless @text.empty?
-
-        start_pos..end_pos
+        end_pos
       end
 
       # Check if cursor is at a word boundary

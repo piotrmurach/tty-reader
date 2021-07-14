@@ -165,52 +165,79 @@ RSpec.describe TTY::Reader::Line do
     expect(line.editing?).to eq(true)
   end
 
-  context "#word" do
-    it "returns empty string when no text content" do
+  context "#word and #word_to_complete" do
+    it "returns empty string when line is empty" do
       line = described_class.new("")
 
       expect(line.word).to eq("")
-      expect(line.range).to eq(0..0)
+      expect(line.word_to_complete).to eq("")
+      expect(line.word_start_pos).to eq(0)
+      expect(line.word_end_pos).to eq(0)
     end
 
-    it "matches the text content" do
+    it "matches the line content without separators" do
       line = described_class.new("foo")
 
       expect(line.word).to eq("foo")
-      expect(line.range).to eq(0..2)
+      expect(line.word_to_complete).to eq("foo")
+      expect(line.word_start_pos).to eq(0)
+      expect(line.word_end_pos).to eq(2)
     end
 
-    it "finds a word at the cursor start position" do
+    it "finds a word when the cursor is at the start of the line" do
       line = described_class.new("foo bar baz")
 
       line.move_to_start
+
       expect(line.word).to eq("foo")
-      expect(line.range).to eq(0..2)
+      expect(line.word_to_complete).to eq("")
+      expect(line.word_start_pos).to eq(0)
+      expect(line.word_end_pos).to eq(2)
     end
 
-    it "finds a word at the cursor end position" do
-      line = described_class.new("foo bar baz")
-
-      expect(line.word).to eq("baz")
-      expect(line.range).to eq(8..10)
-    end
-
-    it "finds a word at the cursor position in the middle of content" do
+    it "finds a word when the cursor is after the start of the line" do
       line = described_class.new("foo bar baz")
 
       line.move_to_start
-      line.right(4)
+      line.right(2)
+
+      expect(line.word).to eq("foo")
+      expect(line.word_to_complete).to eq("fo")
+      expect(line.word_start_pos).to eq(0)
+      expect(line.word_end_pos).to eq(2)
+    end
+
+    it "finds a word when the cursor is at the end of the line" do
+      line = described_class.new("foo bar baz")
+
+      expect(line.word).to eq("baz")
+      expect(line.word_to_complete).to eq("baz")
+      expect(line.word_start_pos).to eq(8)
+      expect(line.word_end_pos).to eq(10)
+    end
+
+    it "finds a word when the cursor is in the middle of the line" do
+      line = described_class.new("foo bar baz")
+
+      line.move_to_start
+      line.right(6)
+
       expect(line.word).to eq("bar")
-      expect(line.range).to eq(4..6)
+      expect(line.word_to_complete).to eq("ba")
+      expect(line.word_start_pos).to eq(4)
+      expect(line.word_end_pos).to eq(6)
     end
 
-    it "finds a word with a cursor at the last word" do
+    it "finds a word when a cursor is inside the last word" do
       line = described_class.new("foo bar baz")
 
       line.move_to_start
-      line.right(8)
+      line.right(10)
+
       expect(line.word).to eq("baz")
-      expect(line.range).to eq(8..10)
+      expect(line.word_to_complete).to eq("ba")
+      expect(line.word_start_pos).to eq(8)
+      expect(line.word_end_pos).to eq(10)
     end
 
     it "finds a word before a break character" do
@@ -218,38 +245,63 @@ RSpec.describe TTY::Reader::Line do
 
       line.move_to_start
       line.right(3)
+
       expect(line.word).to eq("foo")
-      expect(line.range).to eq(0..2)
+      expect(line.word_to_complete).to eq("foo")
+      expect(line.word_start_pos).to eq(0)
+      expect(line.word_end_pos).to eq(2)
     end
 
-    it "finds a word after a break character" do
+    it "finds no word to complete when cursor is on a break character" do
       line = described_class.new("foo bar")
 
       line.move_to_start
       line.right(3)
+
       expect(line.word(before: false)).to eq("bar")
-      expect(line.range).to eq(0..2)
+      expect(line.word_to_complete(before: false)).to eq("")
+      expect(line.word_start_pos(before: false)).to eq(4)
+      expect(line.word_end_pos(from: line.cursor + 1)).to eq(6)
     end
 
-    it "finds a custom break character" do
+    it "finds a word based on custom break character" do
       line = described_class.new("aa\tbb\ncc\"dd\\ee'ff`gg@" \
                                  "hh$ii>jj<kk=ll|mm&nn{oo(pp")
 
       line.move_to_start
+      line.right(2)
       expect(line.word).to eq("aa")
+      expect(line.word_to_complete).to eq("aa")
+
       %w[bb cc dd ee ff gg hh ii jj kk ll mm nn oo pp].each do |word|
         line.right(3)
         expect(line.word).to eq(word)
+        expect(line.word_to_complete).to eq(word)
       end
     end
 
-    it "uses a custom break character" do
+    it "finds a word using a custom break character" do
       line = described_class.new("foo_bar", separator: /_/)
 
       line.move_to_start
       line.right(3)
+
       expect(line.word).to eq("foo")
-      expect(line.range).to eq(0..2)
+      expect(line.word_to_complete).to eq("foo")
+      expect(line.word_start_pos).to eq(0)
+      expect(line.word_end_pos).to eq(2)
+    end
+
+    it "finds a whole word when looking after cursor position" do
+      line = described_class.new("foo bar")
+
+      line.move_to_start
+      line.right(4)
+
+      expect(line.word).to eq("bar")
+      expect(line.word_to_complete).to eq("")
+      expect(line.word_start_pos).to eq(4)
+      expect(line.word_end_pos).to eq(6)
     end
   end
 end
