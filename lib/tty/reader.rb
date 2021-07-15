@@ -4,6 +4,7 @@ require "tty-cursor"
 require "tty-screen"
 require "wisper"
 
+require_relative "reader/completions"
 require_relative "reader/history"
 require_relative "reader/line"
 require_relative "reader/key_event"
