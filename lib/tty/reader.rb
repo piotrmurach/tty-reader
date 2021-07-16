@@ -4,7 +4,7 @@ require "tty-cursor"
 require "tty-screen"
 require "wisper"
 
-require_relative "reader/completions"
+require_relative "reader/completer"
 require_relative "reader/history"
 require_relative "reader/line"
 require_relative "reader/key_event"
@@ -22,10 +22,11 @@ module TTY
     include Wisper::Publisher
 
     # Key codes
+    BACKSPACE = 8
+    TAB       = 9
+    NEWLINE   = 10
     CARRIAGE_RETURN = 13
-    NEWLINE         = 10
-    BACKSPACE       = 8
-    DELETE          = 127
+    DELETE    = 127
 
     # Keys that terminate input
     EXIT_KEYS = %i[ctrl_d ctrl_z].freeze
@@ -56,6 +57,11 @@ module TTY
     attr_reader :track_history
     alias track_history? track_history
 
+    # The handler for finding word completion suggestions
+    #
+    # @api public
+    attr_reader :completion_handler
+
     attr_reader :console
 
     attr_reader :cursor
@@ -78,13 +84,16 @@ module TTY
     #   allow duplicate entires, false by default
     # @param [Proc] history_exclude
     #   exclude lines from history, by default all lines are stored
+    # @param [Proc] completion_handler
+    #   the hanlder for finding word completion suggestions
     #
     # @api public
     def initialize(input: $stdin, output: $stdout, interrupt: :error,
                    env: ENV, track_history: true, history_cycle: false,
                    history_exclude: History::DEFAULT_EXCLUDE,
                    history_size: History::DEFAULT_SIZE,
-                   history_duplicates: false)
+                   history_duplicates: false,
+                   completion_handler: nil)
       @input = input
       @output = output
       @interrupt = interrupt
@@ -94,6 +103,8 @@ module TTY
       @history_exclude = history_exclude
       @history_duplicates = history_duplicates
       @history_size = history_size
+      @completion_handler = completion_handler
+      @completer = Completer.new(handler: completion_handler)
 
       @console = select_console(input)
       @history = History.new(history_size) do |h|
@@ -102,6 +113,17 @@ module TTY
         h.exclude = history_exclude
       end
       @cursor = TTY::Cursor
+    end
+
+    # Set completion handler
+    #
+    # @param [Proc] handler
+    #   the handler for finding word completion suggestions
+    #
+    # @api public
+    def completion_handler=(handler)
+      @completion_handler = handler
+      @completer.handler = handler
     end
 
     alias old_subcribe subscribe
@@ -255,6 +277,7 @@ module TTY
       line = Line.new(value, prompt: prompt)
       screen_width = TTY::Screen.width
       history_in_use = false
+      previous_key_name = ""
       buffer = ""
 
       output.print(line)
@@ -273,7 +296,9 @@ module TTY
           clear_display(line, screen_width)
         end
 
-        if key_name == :backspace || code == BACKSPACE
+        if (key_name == :tab || code == TAB) && completion_handler
+          @completer.complete(line, initial: previous_key_name != :tab)
+        elsif key_name == :backspace || code == BACKSPACE
           if !line.start?
             line.left
             line.delete
@@ -320,6 +345,8 @@ module TTY
             output.print(?\s + (line.start? ? "" : ?\b))
           end
         end
+
+        previous_key_name = key_name
 
         # trigger before line is printed to allow for line changes
         trigger_key_event(char, line: line.to_s)
