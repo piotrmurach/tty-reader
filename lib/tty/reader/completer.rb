@@ -14,14 +14,18 @@ module TTY
       # The handler for finding word completion suggestions
       attr_accessor :handler
 
+      # The suffix to add to suggested word completion
+      attr_accessor :suffix
+
       # The word to complete
       attr_reader :word
 
       # Create a Completer instance
       #
       # @api private
-      def initialize(handler: nil)
+      def initialize(handler: nil, suffix: "")
         @handler = handler
+        @suffix = suffix
         @completions = Completions.new
         @show_initial = false
         @word = ""
@@ -60,7 +64,7 @@ module TTY
         completed_word = completions.get
 
         line.remove(word.length)
-        line.insert(completed_word)
+        line.insert(completed_word + suffix)
 
         completed_word
       end
@@ -90,8 +94,11 @@ module TTY
           completed_word = completions.get
         end
 
-        line.remove(previous_suggestion.length)
-        line.insert(completed_word)
+        length_to_remove = previous_suggestion.length
+        length_to_remove += suffix.length if previous_suggestion != word
+
+        line.remove(length_to_remove)
+        line.insert("#{completed_word}#{suffix unless @show_initial}")
 
         completed_word
       end

@@ -62,6 +62,11 @@ module TTY
     # @api public
     attr_reader :completion_handler
 
+    # The suffix to add to suggested word completion
+    #
+    # @api public
+    attr_reader :completion_suffix
+
     attr_reader :console
 
     attr_reader :cursor
@@ -86,6 +91,8 @@ module TTY
     #   exclude lines from history, by default all lines are stored
     # @param [Proc] completion_handler
     #   the hanlder for finding word completion suggestions
+    # @param [String] completion_suffix
+    #   the suffix to add to suggested word completion
     #
     # @api public
     def initialize(input: $stdin, output: $stdout, interrupt: :error,
@@ -93,7 +100,7 @@ module TTY
                    history_exclude: History::DEFAULT_EXCLUDE,
                    history_size: History::DEFAULT_SIZE,
                    history_duplicates: false,
-                   completion_handler: nil)
+                   completion_handler: nil, completion_suffix: "")
       @input = input
       @output = output
       @interrupt = interrupt
@@ -104,7 +111,9 @@ module TTY
       @history_duplicates = history_duplicates
       @history_size = history_size
       @completion_handler = completion_handler
-      @completer = Completer.new(handler: completion_handler)
+      @completion_suffix = completion_suffix
+      @completer = Completer.new(handler: completion_handler,
+                                 suffix: completion_suffix)
 
       @console = select_console(input)
       @history = History.new(history_size) do |h|
@@ -124,6 +133,17 @@ module TTY
     def completion_handler=(handler)
       @completion_handler = handler
       @completer.handler = handler
+    end
+
+    # Set completion suffix
+    #
+    # @param [String] suffix
+    #   the suffix to add to suggested word completion
+    #
+    # @api public
+    def completion_suffix=(suffix)
+      @completion_suffix = suffix
+      @completer.suffix = suffix
     end
 
     alias old_subcribe subscribe

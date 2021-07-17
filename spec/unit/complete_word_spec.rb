@@ -144,4 +144,54 @@ RSpec.describe TTY::Reader, "complete word" do
 
     expect(answer).to eq(%W[aa\n ab])
   end
+
+  it "adds space suffix to suggested word completion on the first tab" do
+    @completions = %w[aa ab ac]
+    options[:completion_suffix] = " "
+    reader = described_class.new(**options)
+    input << "x " << "a" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+
+    expect(answer).to eq("x aa \n")
+  end
+
+  it "adds space suffix to suggested word completion on the second tab" do
+    @completions = %w[aa ab ac]
+    options[:completion_suffix] = " "
+    reader = described_class.new(**options)
+    input << "x " << "a" << "\t" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+
+    expect(answer).to eq("x ab \n")
+  end
+
+  it "skips adding space suffix to the original word" do
+    @completions = %w[aa ab ac]
+    options[:completion_suffix] = " "
+    reader = described_class.new(**options)
+    input << "x " << "a" << "\t" << "\t" << "\t" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+
+    expect(answer).to eq("x a\n")
+    expect(reader.completion_suffix).to eq(" ")
+  end
+
+  it "adds two chars suffix to suggested word completion" do
+    @completions = %w[aa ab ac]
+    reader = described_class.new(**options)
+    reader.completion_suffix = "??"
+    input << "x " << "a" << "\t" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+
+    expect(answer).to eq("x ab??\n")
+    expect(reader.completion_suffix).to eq("??")
+  end
 end
