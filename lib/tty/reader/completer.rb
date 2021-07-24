@@ -116,6 +116,20 @@ module TTY
 
         completed_word
       end
+
+      # Cancel completion suggestion and revert to the initial word
+      #
+      # @param [Line] line
+      #   the line to cancel word completion in
+      #
+      # @api public
+      def cancel(line)
+        return if completions.empty?
+
+        completed_word = @show_initial ? word : "#{completions.get}#{suffix}"
+        line.remove(completed_word.length)
+        line.insert(word)
+      end
     end # Completer
   end # Reader
 end # TTY

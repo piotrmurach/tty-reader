@@ -251,4 +251,51 @@ RSpec.describe TTY::Reader, "complete word" do
     answer = reader.read_line
     expect(answer).to eq("x aa \n")
   end
+
+  it "cancels word completion" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << "\t" << "\t" << "\e"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a")
+  end
+
+  it "cancels word completion with suffix" do
+    @completions = %w[aa ab ac]
+    reader.completion_suffix = " "
+    input << "x " << "a" << "\t" << "\t" << "\e"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a")
+  end
+
+  it "cancels word completion when cycling in reverse order" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << shift_tab << shift_tab << shift_tab << "\e"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a")
+  end
+
+  it "cancels word without completion" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << "\t" << "\t" << "\t" << "\t" << "\e"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a")
+  end
+
+  it "cancels outside of word completion" do
+    @completions = %w[aa ab ac]
+    reader.completion_suffix = " "
+    input << "x " << "a" << "\t" << left << left << "\e"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a\ea ")
+  end
 end

@@ -321,6 +321,9 @@ module TTY
           initial = previous_key_name != :tab && previous_key_name != :shift_tab
           direction = key_name == :shift_tab ? :previous : :next
           @completer.complete(line, initial: initial, direction: direction)
+        elsif key_name == :escape && completion_handler &&
+              (previous_key_name == :tab || previous_key_name == :shift_tab)
+          @completer.cancel(line)
         elsif key_name == :backspace || code == BACKSPACE
           if !line.start?
             line.left
