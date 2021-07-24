@@ -69,7 +69,7 @@ module TTY
           "\e[E" => :clear,
           "\e[H" => :home,
           "\e[F" => :end,
-          "\e[Z" => :back_tab, # shift + tab
+          "\e[Z" => :shift_tab,
 
           # xterm/gnome
           "\eOA" => :up,

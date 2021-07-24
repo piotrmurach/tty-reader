@@ -316,8 +316,11 @@ module TTY
           clear_display(line, screen_width)
         end
 
-        if (key_name == :tab || code == TAB) && completion_handler
-          @completer.complete(line, initial: previous_key_name != :tab)
+        if (key_name == :tab || code == TAB || key_name == :shift_tab) &&
+           completion_handler
+          initial = previous_key_name != :tab && previous_key_name != :shift_tab
+          direction = key_name == :shift_tab ? :previous : :next
+          @completer.complete(line, initial: initial, direction: direction)
         elsif key_name == :backspace || code == BACKSPACE
           if !line.start?
             line.left

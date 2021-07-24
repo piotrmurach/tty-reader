@@ -35,25 +35,35 @@ module TTY
       #
       # @param [Line] line
       #   the line to complete a word in
+      # @param [Symbol] direction
+      #   the direction in which to cycle through completions
+      # @param [Boolean] initial
+      #   whether to find initial or next completion suggestion
       #
       # @return [String, nil]
       #   the completed word or nil when no suggestion is found
       #
       # @api public
-      def complete(line, initial: false)
-        initial ? complete_initial(line) : complete_next(line)
+      def complete(line, direction: :next, initial: false)
+        if initial
+          complete_initial(line, direction: direction)
+        else
+          complete_next(line, direction: direction)
+        end
       end
 
       # Find suggestions and complete the initial word
       #
       # @param [Line] line
       #   the line to complete a word in
+      # @param [Symbol] direction
+      #   the direction in which to cycle through completions
       #
       # @return [String, nil]
       #   the completed word or nil when no suggestion is found
       #
       # @api public
-      def complete_initial(line)
+      def complete_initial(line, direction: :next)
         @word = line.word_to_complete
         suggestions = handler.(word)
         completions.clear
@@ -61,6 +71,7 @@ module TTY
         return if suggestions.empty?
 
         completions.concat(suggestions)
+        completions.previous if direction == :previous
         completed_word = completions.get
 
         line.remove(word.length)
@@ -73,16 +84,19 @@ module TTY
       #
       # @param [Line] line
       #   the line to complete a word in
+      # @param [Symbol] direction
+      #   the direction in which to cycle through completions
       #
       # @return [String, nil]
       #   the completed word or nil when no suggestion is found
       #
       # @api public
-      def complete_next(line)
+      def complete_next(line, direction: :next)
         return if completions.empty?
 
         previous_suggestion = completions.get
-        if completions.last? && !@show_initial
+        first_or_last = direction == :previous ? :first? : :last?
+        if completions.send(first_or_last) && !@show_initial
           @show_initial = true
           completed_word = word
         else
@@ -90,7 +104,7 @@ module TTY
             @show_initial = false
             previous_suggestion = word
           end
-          completions.next
+          completions.send(direction)
           completed_word = completions.get
         end
 

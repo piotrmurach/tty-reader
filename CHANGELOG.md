@@ -4,7 +4,7 @@
 
 ### Added
 * Add to line the ability to find a word to complete before the cursor
-* Add ability to complete words
+* Add ability to complete words and cycle through completions in both directions
 * Add support for adding a custom suffix to suggested word completion
 * Add :history_size keyword to allow configuration of maximum history size
 * Add the ability to replace a current line in the history buffer

@@ -5,6 +5,7 @@ RSpec.describe TTY::Reader, "complete word" do
   let(:output) { StringIO.new }
   let(:env)    { {"TTY_TEST" => true} }
   let(:left)   { "\e[D" }
+  let(:shift_tab) { "\e[Z" }
   let(:completion_handler) {
     ->(word) { @completions.grep(/\A#{Regexp.escape(word)}/) }
   }
@@ -193,5 +194,61 @@ RSpec.describe TTY::Reader, "complete word" do
 
     expect(answer).to eq("x ab??\n")
     expect(reader.completion_suffix).to eq("??")
+  end
+
+  it "completes word with the last suggestion on Shift+Tab" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << shift_tab << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x ac\n")
+  end
+
+  it "completes word with the first suggestion on multiple Shift+Tab" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << shift_tab << shift_tab << shift_tab << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa\n")
+  end
+
+  it "cycles through completions with Shift+Tab back to the original word" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a"
+    input << shift_tab << shift_tab << shift_tab << shift_tab << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a\n")
+  end
+
+  it "completes word with previous and then next suggestion" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << shift_tab << shift_tab << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x ac\n")
+  end
+
+  it "completes word with next and then previous suggestion" do
+    @completions = %w[aa ab ac]
+    input << "x " << "a" << "\t" << "\t" << shift_tab << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa\n")
+  end
+
+  it "adds space suffix to suggested word completion on Shift+Tab" do
+    @completions = %w[aa ab ac]
+    reader.completion_suffix = " "
+    input << "x " << "a" << shift_tab << shift_tab << shift_tab << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa \n")
   end
 end
