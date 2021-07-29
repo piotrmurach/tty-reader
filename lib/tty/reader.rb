@@ -5,6 +5,7 @@ require "tty-screen"
 require "wisper"
 
 require_relative "reader/completer"
+require_relative "reader/completion_event"
 require_relative "reader/history"
 require_relative "reader/line"
 require_relative "reader/key_event"
@@ -320,7 +321,10 @@ module TTY
            completion_handler
           initial = previous_key_name != :tab && previous_key_name != :shift_tab
           direction = key_name == :shift_tab ? :previous : :next
-          @completer.complete(line, initial: initial, direction: direction)
+          if completion = @completer.complete(line, initial: initial,
+                                                    direction: direction)
+            trigger_completion_event(completion, line.to_s)
+          end
         elsif key_name == :escape && completion_handler &&
               (previous_key_name == :tab || previous_key_name == :shift_tab)
           @completer.cancel(line)
@@ -562,6 +566,19 @@ module TTY
     end
 
     private
+
+    # Trigger completion event
+    #
+    # @param [String] completion
+    #   the suggested word completion
+    # @param [Line] line
+    #   the line with word to complete
+    #
+    # @api private
+    def trigger_completion_event(completion, line)
+      completion_event = CompletionEvent.new(@completer, completion, line)
+      trigger(:complete, completion_event)
+    end
 
     # Publish event
     #

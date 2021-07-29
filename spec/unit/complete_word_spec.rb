@@ -298,4 +298,127 @@ RSpec.describe TTY::Reader, "complete word" do
     answer = reader.read_line
     expect(answer).to eq("x a\ea ")
   end
+
+  it "triggers completion event after completing the first suggestion" do
+    @completions = %w[aa ab ac]
+    completion_event = nil
+    reader.on(:complete) do |event|
+      completion_event = event
+      formatted_completions = event.completions.map do |compl|
+        compl == event.completion ? "(#{compl})" : compl
+      end
+      output.puts formatted_completions.join(" ")
+    end
+    input << "x " << "a" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa\n")
+    expect(completion_event.completion).to eq("aa")
+    expect(completion_event.completions).to eq(@completions)
+    expect(completion_event.line).to eq("x aa")
+    expect(completion_event.word).to eq("a")
+
+    output.rewind
+    expect(output.string).to eq([
+      "\e[2K\e[1Gx",
+      "\e[2K\e[1Gx ",
+      "\e[2K\e[1Gx a",
+      "\e[2K\e[1G(aa) ab ac\nx aa",
+      "\e[2K\e[1Gx aa\n"
+    ].join)
+  end
+
+  it "triggers completion event after finding only one completion" do
+    @completions = %w[aa bb cc]
+    reader.on(:complete) do |event|
+      formatted_completions = event.completions.map do |compl|
+        compl == event.completion ? "(#{compl})" : compl
+      end
+      output.puts formatted_completions.join(" ")
+    end
+    input << "x " << "a" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa\n")
+
+    output.rewind
+    expect(output.string).to eq([
+      "\e[2K\e[1Gx",
+      "\e[2K\e[1Gx ",
+      "\e[2K\e[1Gx a",
+      "\e[2K\e[1G(aa)\nx aa",
+      "\e[2K\e[1Gx aa\n"
+    ].join)
+  end
+
+  it "doesn't trigger completion event when no completions are found" do
+    @completions = []
+    completion_triggered = false
+    reader.on(:complete) { completion_triggered = true }
+    input << "x " << "a" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x a\n")
+    expect(completion_triggered).to eq(false)
+  end
+
+  it "cycles through completions triggerring completion events" do
+    @completions = %w[aa ab ac]
+    reader.on(:complete) do |event|
+      formatted_completions = event.completions.map do |compl|
+        compl == event.completion ? "(#{compl})" : compl
+      end
+      output.puts formatted_completions.join(" ")
+    end
+    input << "x " << "a" << "\t" << "\t" << "\t" << "\t" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa\n")
+
+    output.rewind
+    expect(output.string).to eq([
+      "\e[2K\e[1Gx",
+      "\e[2K\e[1Gx ",
+      "\e[2K\e[1Gx a",
+      "\e[2K\e[1G(aa) ab ac\nx aa",
+      "\e[2K\e[1Gaa (ab) ac\nx ab",
+      "\e[2K\e[1Gaa ab (ac)\nx ac",
+      "\e[2K\e[1Gaa ab ac\nx a",
+      "\e[2K\e[1G(aa) ab ac\nx aa",
+      "\e[2K\e[1Gx aa\n"
+    ].join)
+  end
+
+  it "cycles through completions with suffix triggerring completion events" do
+    @completions = %w[aa ab ac]
+    reader.completion_suffix = " "
+    reader.on(:complete) do |event|
+      formatted_completions = event.completions.map do |compl|
+        compl == event.completion ? "(#{compl})" : compl
+      end
+      output.puts formatted_completions.join(" ")
+    end
+    input << "x " << "a" << "\t" << "\t" << "\t" << "\t" << "\t" << "\n"
+    input.rewind
+
+    answer = reader.read_line
+    expect(answer).to eq("x aa \n")
+
+    output.rewind
+    expect(output.string).to eq([
+      "\e[2K\e[1Gx",
+      "\e[2K\e[1Gx ",
+      "\e[2K\e[1Gx a",
+      "\e[2K\e[1G(aa) ab ac\nx aa ",
+      "\e[2K\e[1Gaa (ab) ac\nx ab ",
+      "\e[2K\e[1Gaa ab (ac)\nx ac ",
+      "\e[2K\e[1Gaa ab ac\nx a",
+      "\e[2K\e[1G(aa) ab ac\nx aa ",
+      "\e[2K\e[1Gx aa \n"
+    ].join)
+  end
 end
