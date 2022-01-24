@@ -331,7 +331,7 @@ The key events for functional keys `f*` are:
 By default `InputInterrupt` error will be raised when the user hits the interrupt key(Control-C). However, you can customise this behaviour by passing the `:interrupt` option. The available options are:
 
 * `:signal` - sends interrupt signal
-* `:exit` - exists with status code
+* `:exit` - exits with status code
 * `:noop` - skips handler
 * custom proc
 
