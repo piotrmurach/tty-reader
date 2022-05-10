@@ -10,6 +10,7 @@ module TTY
     class Console
       ESC = "\e"
       CSI = "\e["
+      XTERM = "\eO"
 
       TIMEOUT = 0.1
 
@@ -31,7 +32,7 @@ module TTY
         @input = input
         @mode  = Mode.new(input)
         @keys  = Keys.ctrl_keys.merge(Keys.keys)
-        @escape_codes = [[ESC.ord], CSI.bytes.to_a]
+        @escape_codes = [[ESC.ord], CSI.bytes.to_a, XTERM.bytes.to_a]
       end
 
       # Get a character from console with echo
