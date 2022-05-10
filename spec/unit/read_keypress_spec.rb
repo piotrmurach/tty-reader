@@ -25,6 +25,18 @@ RSpec.describe TTY::Reader, "#read_keypress" do
     expect(answer).to eq("ㄱ")
   end
 
+  TTY::Reader::Keys.keys.each do |code, name|
+    it "reads #{Shellwords.escape(code)} as a #{name} key press" do
+      reader = described_class.new(input: input, output: out, env: env)
+      input << code
+      input.rewind
+
+      answer = reader.read_keypress
+
+      expect(answer).to eq(code)
+    end
+  end
+
   context "when Ctrl+C pressed" do
     it "defaults to raising InputInterrupt" do
       reader = described_class.new(input: input, output: out, env: env)
