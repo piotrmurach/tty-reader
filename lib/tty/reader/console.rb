@@ -40,8 +40,9 @@ module TTY
       #   whether to echo input back or not, defaults to true
       # @param [Boolean] raw
       #   whether to use raw mode or not, defaults to false
-      # @param [Boolean] nonblock
+      # @param [Boolean, Numeric] nonblock
       #   whether to wait for input or not, defaults to false
+      #   if it's Numeric, then use that for the timeout
       #
       # @return [String]
       #
@@ -50,7 +51,7 @@ module TTY
         mode.raw(raw) do
           mode.echo(echo) do
             if nonblock
-              input.wait_readable(TIMEOUT) ? input.getc : nil
+              input.wait_readable(nonblock.is_a?(Numeric) ? nonblock : TIMEOUT) ? input.getc : nil
             else
               input.getc
             end

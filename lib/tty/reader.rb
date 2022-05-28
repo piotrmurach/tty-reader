@@ -221,8 +221,9 @@ module TTY
     #   whether to echo chars back or not, defaults to false
     # @option [Boolean] raw
     #   whenther raw mode is enabled, defaults to true
-    # @option [Boolean] nonblock
+    # @option [Boolean, Numeric] nonblock
     #   whether to wait for input or not, defaults to false
+    #   if it's Numeric, then use that for the timeout
     #
     # @return [String]
     #
