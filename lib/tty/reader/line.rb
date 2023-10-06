@@ -75,7 +75,7 @@ module TTY
 
         # return the length of each line + screen width for every line
         # past the first which accounts for multi-line prompts
-        lines.join.length + ((lines.length - 1) * TTY::Screen.width)
+        lines.last.length + ((lines.length - 1) * TTY::Screen.width)
       end
 
       # Check if line is in edit mode
