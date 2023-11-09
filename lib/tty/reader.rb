@@ -379,7 +379,7 @@ module TTY
         previous_key_name = key_name
 
         # trigger before line is printed to allow for line changes
-        trigger_key_event(char, line: line.to_s)
+        trigger_key_event(char, line: line)
 
         if raw && echo
           output.print(line.to_s)

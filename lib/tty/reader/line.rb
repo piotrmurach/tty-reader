@@ -332,6 +332,10 @@ module TTY
       def to_s
         "#{@prompt}#{@text}"
       end
+
+      # to_str enables type coercion and thus `line` in
+      # `trigger_char_event` does not need to be flattened to a string.
+      alias to_str  to_s
       alias inspect to_s
 
       # Text size
