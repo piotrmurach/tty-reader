@@ -303,9 +303,9 @@ module TTY
       # Add char and move cursor
       #
       # @api public
-      def <<(char)
-        @text << char
-        @cursor += 1
+      def <<(str)
+        @text << str
+        @cursor += str.length
       end
 
       # Remove char from the line at current position
@@ -332,7 +332,29 @@ module TTY
       def to_s
         "#{@prompt}#{@text}"
       end
-      alias inspect to_s
+
+      # to_str enables type coercion and thus `line` in
+      # `trigger_char_event` does not need to be flattened to a string.
+      alias to_str to_s
+
+      # Overload inspect
+      #
+      # @api public
+      def inspect
+        to_s.inspect
+      end
+
+      # Overload equality comparison
+      #
+      # @api public
+      def ==(other)
+        if other.is_a? self.class
+          super other
+        else
+          other = other.to_s if other.respond_to? :to_s
+          to_s == other
+        end
+      end
 
       # Text size
       #

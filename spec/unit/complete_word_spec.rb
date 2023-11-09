@@ -302,8 +302,11 @@ RSpec.describe TTY::Reader, "complete word" do
   it "triggers completion event after completing the first suggestion" do
     @completions = %w[aa ab ac]
     completion_event = nil
+    test_line = nil # state of the line at the time the event is fired
+
     reader.on(:complete) do |event|
       completion_event = event
+      test_line = event.line.dup # we duplicate to cut the strings
       formatted_completions = event.completions.map do |compl|
         compl == event.completion ? "(#{compl})" : compl
       end
@@ -316,7 +319,7 @@ RSpec.describe TTY::Reader, "complete word" do
     expect(answer).to eq("x aa\n")
     expect(completion_event.completion).to eq("aa")
     expect(completion_event.completions).to eq(@completions)
-    expect(completion_event.line).to eq("x aa")
+    expect(test_line).to eq("x aa") # implicit test of to_s and ==
     expect(completion_event.word).to eq("a")
 
     output.rewind

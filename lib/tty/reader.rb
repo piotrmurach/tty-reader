@@ -309,7 +309,7 @@ module TTY
         key_name = console.keys[char]
 
         if exit_keys && exit_keys.include?(key_name)
-          trigger_key_event(char, line: line.to_s)
+          trigger_key_event(char, line: line)
           break
         end
 
@@ -323,7 +323,7 @@ module TTY
           direction = key_name == :shift_tab ? :previous : :next
           if completion = @completer.complete(line, initial: initial,
                                                     direction: direction)
-            trigger_completion_event(completion, line.to_s)
+            trigger_completion_event(completion, line)
           end
         elsif key_name == :escape && completion_handler &&
               (previous_key_name == :tab || previous_key_name == :shift_tab)
@@ -379,7 +379,7 @@ module TTY
         previous_key_name = key_name
 
         # trigger before line is printed to allow for line changes
-        trigger_key_event(char, line: line.to_s)
+        trigger_key_event(char, line: line)
 
         if raw && echo
           output.print(line.to_s)
