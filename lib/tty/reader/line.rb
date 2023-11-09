@@ -338,6 +338,18 @@ module TTY
       alias to_str  to_s
       alias inspect to_s
 
+      # Overload equality comparison
+      #
+      # @api public
+      def ==(other)
+        if other.is_a? self.class
+          super other
+        else
+          other = other.to_s if other.respond_to? :to_s
+          to_s == other
+        end
+      end
+
       # Text size
       #
       # @api public
