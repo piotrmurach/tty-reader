@@ -17,7 +17,7 @@ RSpec.describe TTY::Reader, "#with_history_disabled" do
     lines = []
     reader.on(:keypress) do |event|
       chars << event.value
-      lines << event.line.to_s
+      lines << event.line.dup # sever line object
     end
     answer = reader.read_line
 
@@ -33,7 +33,7 @@ RSpec.describe TTY::Reader, "#with_history_disabled" do
     lines = []
     reader.on(:keypress) do |event|
       chars << event.value
-      lines << event.line.to_s
+      lines << event.line.dup
     end
     answer = reader.read_line
 

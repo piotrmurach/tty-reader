@@ -335,8 +335,14 @@ module TTY
 
       # to_str enables type coercion and thus `line` in
       # `trigger_char_event` does not need to be flattened to a string.
-      alias to_str  to_s
-      alias inspect to_s
+      alias to_str to_s
+
+      # Overload inspect
+      #
+      # @api public
+      def inspect
+        to_s.inspect
+      end
 
       # Overload equality comparison
       #
