@@ -151,7 +151,7 @@ RSpec.describe TTY::Reader, "#read_line" do
 
       reader.on(:keypress) do |event|
         chars << event.value
-        lines << event.line
+        lines << event.line.to_s
       end
 
       3.times do
@@ -171,7 +171,7 @@ RSpec.describe TTY::Reader, "#read_line" do
 
       reader.on(:keypress) do |event|
         chars << event.value
-        lines << event.line
+        lines << event.line.to_s
       end
 
       reader.read_line
@@ -206,7 +206,7 @@ RSpec.describe TTY::Reader, "#read_line" do
       answer = nil
       lines = []
 
-      reader.on(:keypress) { |event| lines << event.line }
+      reader.on(:keypress) { |event| lines << event.line.to_s }
 
       4.times do
         answer = reader.read_line
@@ -250,7 +250,7 @@ RSpec.describe TTY::Reader, "#read_line" do
       answer = nil
       lines = []
 
-      reader.on(:keypress) { |event| lines << event.line }
+      reader.on(:keypress) { |event| lines << event.line.to_s }
 
       3.times do
         answer = reader.read_line
@@ -271,7 +271,7 @@ RSpec.describe TTY::Reader, "#read_line" do
       answer = nil
       lines = []
 
-      reader.on(:keypress) { |event| lines << event.line }
+      reader.on(:keypress) { |event| lines << event.line.to_s }
 
       3.times do
         answer = reader.read_line
@@ -289,7 +289,7 @@ RSpec.describe TTY::Reader, "#read_line" do
       answer = nil
       lines = []
 
-      reader.on(:keypress) { |event| lines << event.line }
+      reader.on(:keypress) { |event| lines << event.line.to_s }
 
       3.times do
         answer = reader.read_line

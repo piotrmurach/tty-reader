@@ -303,9 +303,10 @@ module TTY
       # Add char and move cursor
       #
       # @api public
-      def <<(char)
-        @text << char
-        @cursor += 1
+      def <<(str)
+        warn str
+        @text << str
+        @cursor += str.length
       end
 
       # Remove char from the line at current position
