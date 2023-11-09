@@ -304,7 +304,6 @@ module TTY
       #
       # @api public
       def <<(str)
-        warn str
         @text << str
         @cursor += str.length
       end

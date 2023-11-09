@@ -337,7 +337,6 @@ module TTY
           line.delete
         elsif key_name.to_s =~ /ctrl_/
           # skip
-          # trigger_key_event(key_name, line: line)
         elsif key_name == :up
           @history.replace(line.text) if history_in_use
           if history_previous?
