@@ -157,8 +157,8 @@ module TTY
     # @return [self|yield]
     #
     # @api public
-    def subscribe(listener, options = {})
-      old_subcribe(listener, options)
+    def subscribe(listener, **options)
+      old_subcribe(listener, **options)
       object = self
       if block_given?
         object = yield
