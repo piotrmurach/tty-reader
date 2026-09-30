@@ -51,6 +51,7 @@ module TTY
           "\e" => :escape,
           " "  => :space,
           "\x7F"  => :backspace,
+          "\e\x7F" => :ctrl_backspace,
           "\e[1~" => :home,
           "\e[2~" => :insert,
           "\e[3~" => :delete,

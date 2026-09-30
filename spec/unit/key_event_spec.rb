@@ -11,6 +11,12 @@ RSpec.describe TTY::Reader::KeyEvent, "#from" do
     expect(event.value).to eq("\x7f")
   end
 
+  it "parses ctrl backspace" do
+    event = described_class.from(keys, "\e\x7F")
+    expect(event.key.name).to eq(:ctrl_backspace)
+    expect(event.value).to eq("\e\x7F")
+  end
+
   it "parses lowercase char" do
     event = described_class.from(keys, "a")
     expect(event.key.name).to eq(:alpha)

@@ -293,7 +293,9 @@ The available key events for character input are:
 * `:keyenter`
 * `:keyreturn`
 * `:keytab`
+* `:keybacktab` (shift + tab)
 * `:keybackspace`
+* `:keyctrl_backspace`
 * `:keyspace`
 * `:keyescape`
 * `:keydelete`
